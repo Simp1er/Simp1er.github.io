@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpg?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head.jpg?v=7.4.1">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="写在前面，经过几天的奋斗终于搞定了jarvisOJ的basic部分题目，虽然题目确实比较简单，但是胜在类型多啊，有些见都没见过，长姿势，长姿势">
+<meta name="keywords" content="Wp,JarvisOJ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JarvisOJ-Basic部分writeup">
+<meta property="og:url" content="https://simp1er.github.io/posts/9cc44df8/index.html">
+<meta property="og:site_name" content="Simp1er&#39;s blog">
+<meta property="og:description" content="写在前面，经过几天的奋斗终于搞定了jarvisOJ的basic部分题目，虽然题目确实比较简单，但是胜在类型多啊，有些见都没见过，长姿势，长姿势">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-11T08:56:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JarvisOJ-Basic部分writeup">
+<meta name="twitter:description" content="写在前面，经过几天的奋斗终于搞定了jarvisOJ的basic部分题目，虽然题目确实比较简单，但是胜在类型多啊，有些见都没见过，长姿势，长姿势">
+  <link rel="canonical" href="https://simp1er.github.io/posts/9cc44df8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>JarvisOJ-Basic部分writeup | Simp1er's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Simp1er's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+      
+    
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://simp1er.github.io/posts/9cc44df8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Simp1er">
+      <meta itemprop="description" content="L0ve Everything Simp1e">
+      <meta itemprop="image" content="/images/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Simp1er's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            JarvisOJ-Basic部分writeup
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2017-08-16 09:57:43" itemprop="dateCreated datePublished" datetime="2017-08-16T09:57:43+08:00">2017-08-16</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-11 16:56:08" itemprop="dateModified" datetime="2019-07-11T16:56:08+08:00">2019-07-11</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Wp/" itemprop="url" rel="index">
+                    <span itemprop="name">Wp</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>写在前面，经过几天的奋斗终于搞定了jarvisOJ的basic部分题目，虽然题目确实比较简单，但是胜在类型多啊，有些见都没见过，长姿势，长姿势</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="base64"><a href="#base64" class="headerlink" title="base64?"></a>base64?</h2><h3 id="题目描述-分值：50"><a href="#题目描述-分值：50" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>GUYDIMZVGQ2DMN3CGRQTONJXGM3TINLGG42DGMZXGM3TINLGGY4DGNBXGYZTGNLGGY3DGNBWMU3WI===</p>
+<h3 id="解题过程"><a href="#解题过程" class="headerlink" title="解题过程"></a>解题过程</h3><p>观察字符串，完全大写，应该是base32编码,python解密<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj40rixqzj30hu01pa9u.jpg"><br>很明显16进制,hackbar hex解密得到flag</p>
+<h2 id="关于USS-Lab"><a href="#关于USS-Lab" class="headerlink" title="关于USS Lab."></a>关于USS Lab.</h2><h3 id="题目描述-分值：50-1"><a href="#题目描述-分值：50-1" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>USS的英文全称是什么，请全部小写并使用下划线连接_，并在外面加上PCTF{}之后提交</p>
+<h3 id="解题过程-1"><a href="#解题过程-1" class="headerlink" title="解题过程"></a>解题过程</h3><p>既然知道jarvisOJ就肯定知道这个全称啊，加上PCTF{},得到flag</p>
+<h2 id="veryeasy"><a href="#veryeasy" class="headerlink" title="veryeasy"></a>veryeasy</h2><h3 id="题目描述-分值：50-2"><a href="#题目描述-分值：50-2" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>使用基本命令获取flag</p>
+<h3 id="解题过程-2"><a href="#解题过程-2" class="headerlink" title="解题过程"></a>解题过程</h3><p>拿到附件，直接上IDA,是个mac下的文件，搜索字符串，拿到了flag，感觉并没有用什么基本命令啊<br>后来一想；应该题目本意是让用strings命令吧<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj41673wyj30h109n3zd.jpg"><br>拿到flag</p>
+<h2 id="段子"><a href="#段子" class="headerlink" title="段子"></a>段子</h2><h3 id="题目描述-分值：50-3"><a href="#题目描述-分值：50-3" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>程序猿圈子里有个非常著名的段子：</p>
+<p>手持两把锟斤拷，口中疾呼烫烫烫。</p>
+<p>请提交其中”锟斤拷”的十六进制编码。(大写)</p>
+<p>FLAG: PCTF{你的答案}</p>
+<h3 id="解题过程-3"><a href="#解题过程-3" class="headerlink" title="解题过程"></a>解题过程</h3><p>“烫烫烫”我倒是知道，”锟斤拷”就不清楚了，这个时候就上google了</p>
+<p><a href="http://blog.csdn.net/mig_davidli/article/details/37507731" target="_blank" rel="noopener">“烫烫烫”与“锟斤拷”的原理</a><br>组合起来，加上PCTF{},拿到flag</p>
+<h2 id="手贱"><a href="#手贱" class="headerlink" title="手贱"></a>手贱</h2><h3 id="题目描述-分值：50-4"><a href="#题目描述-分值：50-4" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>某天A君的网站被日，管理员密码被改，死活登不上，去数据库一看，啥，这密码md5不是和原来一样吗？为啥登不上咧？</p>
+<p>d78b6f302l25cdc811adfe8d4e7c9fd34</p>
+<p>请提交PCTF{原来的管理员密码}</p>
+<h3 id="解题过程-4"><a href="#解题过程-4" class="headerlink" title="解题过程"></a>解题过程</h3><p>观察所给“md5”的形式，发现多了一位l；去掉多余一位，在线解密<br><a href="http://cmd5.com/" target="_blank" rel="noopener">md5在线解密</a><br>得到flag</p>
+<h2 id="美丽的实验室logo"><a href="#美丽的实验室logo" class="headerlink" title="美丽的实验室logo"></a>美丽的实验室logo</h2><h3 id="题目描述-分值：50-5"><a href="#题目描述-分值：50-5" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>出题人丢下个logo就走了，大家自己看着办吧</p>
+<h3 id="解题过程-5"><a href="#解题过程-5" class="headerlink" title="解题过程"></a>解题过程</h3><p>下载附件后，一个图片，先上stegsolve<br>在第二个frame里看到flag<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj41lam40j30l10bimxm.jpg"></p>
+<h2 id="veryeasyRSA"><a href="#veryeasyRSA" class="headerlink" title="veryeasyRSA"></a>veryeasyRSA</h2><h3 id="题目描述-分值：50-6"><a href="#题目描述-分值：50-6" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>已知RSA公钥生成参数：</p>
+<p>p = 3487583947589437589237958723892346254777 q = 8767867843568934765983476584376578389<br>e = 65537</p>
+<p>求d = ?</p>
+<p>请提交PCTF{d}</p>
+<h3 id="解题过程-6"><a href="#解题过程-6" class="headerlink" title="解题过程"></a>解题过程</h3><p>直接上工具RSATool<br>输入对应值，拿到flag</p>
+<h2 id="神秘的文件"><a href="#神秘的文件" class="headerlink" title="神秘的文件"></a>神秘的文件</h2><h3 id="题目描述-分值：50-7"><a href="#题目描述-分值：50-7" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>出题人太懒，还是就丢了个文件就走了，你能发现里面的秘密吗？</p>
+<h3 id="解题过程-7"><a href="#解题过程-7" class="headerlink" title="解题过程"></a>解题过程</h3><p>binwalk分析下<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj41ylnj6j30k704fmy7.jpg"><br>发现是个磁盘文件，挂载</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> sudo mkdir tmp &amp;&amp; mount haha.f38a74f55b4e193561d1b707211cf7eb tmp</span><br><span class="line"><span class="meta">$</span> cd tmp</span><br><span class="line"><span class="meta">$</span> ls</span><br></pre></td></tr></table></figure>
+
+<p>发现文件目录下多了很多文件<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj427zbkoj30nd08pwhh.jpg"></p>
+<p>打开几个文件发现，每个文件中只有一个字符，写了个脚本读取每个文件中的值，并组合成flag</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">flag = <span class="string">''</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">254</span>):</span><br><span class="line">    f = open(str(i))</span><br><span class="line">    flag += f.read()</span><br><span class="line">    f.close()</span><br><span class="line"><span class="keyword">print</span> flag</span><br></pre></td></tr></table></figure>
+
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj42i1asnj311901sdg7.jpg"><br>拿到flag</p>
+<h2 id="公倍数"><a href="#公倍数" class="headerlink" title="公倍数"></a>公倍数</h2><h3 id="题目描述-分值：50-8"><a href="#题目描述-分值：50-8" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>请计算1000000000以内3或5的倍数之和。</p>
+<p>如：10以内这样的数有3,5,6,9，和是23</p>
+<p>请提交PCTF{你的答案}</p>
+<h3 id="解题过程-8"><a href="#解题过程-8" class="headerlink" title="解题过程"></a>解题过程</h3><p>简单数学问题，直接上脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">flag = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">3</span>,<span class="number">1000000000</span>,<span class="number">3</span>):</span><br><span class="line">    flag += i</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">5</span>,<span class="number">1000000000</span>,<span class="number">5</span>):</span><br><span class="line">    flag += i</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">15</span>,<span class="number">1000000000</span>,<span class="number">15</span>):</span><br><span class="line">    flag -= i</span><br><span class="line"><span class="keyword">print</span> flag</span><br></pre></td></tr></table></figure>
+
+<h2 id="Easy-Crackme"><a href="#Easy-Crackme" class="headerlink" title="Easy Crackme"></a>Easy Crackme</h2><h3 id="题目描述-分值：50-9"><a href="#题目描述-分值：50-9" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>都说逆向挺难的，但是这题挺容易的，反正我不会，大家来挑战一下吧~~:)</p>
+<h3 id="解题过程-9"><a href="#解题过程-9" class="headerlink" title="解题过程"></a>解题过程</h3><p>IDA载入，找到关键点<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj42sel91j30hw0amdfv.jpg"><br>分析代码<br>写出脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">lists = [<span class="number">0xfb</span>,<span class="number">0x9e</span>,<span class="number">0x67</span>,<span class="number">0x12</span>,<span class="number">0x4e</span>,</span><br><span class="line">         <span class="number">0x9d</span>,<span class="number">0x98</span>,<span class="number">0xab</span>,<span class="number">0x00</span>,<span class="number">0x06</span>,</span><br><span class="line">         <span class="number">0x46</span>,<span class="number">0x8a</span>,<span class="number">0xf4</span>,<span class="number">0xb4</span>,<span class="number">0x06</span>,</span><br><span class="line">         <span class="number">0x0b</span>,<span class="number">0x43</span>,<span class="number">0xdc</span>,<span class="number">0xd9</span>,<span class="number">0xa4</span>,</span><br><span class="line">         <span class="number">0x6c</span>,<span class="number">0x31</span>,<span class="number">0x74</span>,<span class="number">0x9c</span>,<span class="number">0xd2</span>,</span><br><span class="line">         <span class="number">0xa0</span>]</span><br><span class="line">string = [<span class="number">0xab</span>,<span class="number">0xdd</span>,<span class="number">0x33</span>,<span class="number">0x54</span>,<span class="number">0x35</span>,<span class="number">0xef</span>]</span><br><span class="line">flag  = <span class="string">''</span></span><br><span class="line">flag += chr(lists[<span class="number">0</span>]^string[<span class="number">0</span>])s</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1</span>,len(lists)):</span><br><span class="line">    flag += chr(lists[i]^string[i%<span class="number">6</span>])</span><br><span class="line"><span class="keyword">print</span> flag</span><br></pre></td></tr></table></figure>
+
+<p>拿到flag</p>
+<h2 id="Secret"><a href="#Secret" class="headerlink" title="Secret"></a>Secret</h2><h3 id="题目描述-分值：50-10"><a href="#题目描述-分值：50-10" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>传说中的签到题</p>
+<p>题目入口：<a href="http://web.jarvisoj.com:32776/" target="_blank" rel="noopener">http://web.jarvisoj.com:32776/</a></p>
+<p>Hint1: 提交格式PCTF{你发现的秘密}</p>
+<h3 id="解题过程-10"><a href="#解题过程-10" class="headerlink" title="解题过程"></a>解题过程</h3><p>访问之，查看源码没有，观察http响应与请求<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj43332kwj30cr097t98.jpg"><br>拿到flag</p>
+<h2 id="爱吃培根的出题人"><a href="#爱吃培根的出题人" class="headerlink" title="爱吃培根的出题人"></a>爱吃培根的出题人</h2><h3 id="题目描述-分值：50-11"><a href="#题目描述-分值：50-11" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>听说你也喜欢吃培根？那我们一起来欣赏一段培根的介绍吧：</p>
+<p>bacoN is one of aMerICa’S sWEethEartS. it’s A dARlinG, SuCCulEnt fOoD tHAt PaIRs FlawLE</p>
+<p>什么，不知道要干什么？上面这段巨丑无比的文字，为什么会有大小写呢？你能发现其中的玄机吗？</p>
+<p>提交格式：PCTF{你发现的玄机}</p>
+<h3 id="解题过程-11"><a href="#解题过程-11" class="headerlink" title="解题过程"></a>解题过程</h3><p>培根密码，去掉除字母之外的字符，以5个为一组分组</p>
+<p>bacoN isone ofaMe rICaS sWEet hEart SitsA dARli nGSuC CulEn tfOoD tHAtP aIRsF lawLE</p>
+<p>由于培根有两种情况，分别手撕出来，拿到flag</p>
+<h2 id="Easy-RSA"><a href="#Easy-RSA" class="headerlink" title="Easy RSA"></a>Easy RSA</h2><h3 id="题目描述-分值：50-12"><a href="#题目描述-分值：50-12" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>还记得veryeasy RSA吗？是不是不难？那继续来看看这题吧，这题也不难。</p>
+<p>已知一段RSA加密的信息为：0xdc2eeeb2782c且已知加密所用的公钥：</p>
+<p>(N=322831561921859 e = 23)</p>
+<p>请解密出明文，提交时请将数字转化为ascii码提交</p>
+<p>比如你解出的明文是0x6162，那么请提交字符串ab</p>
+<p>提交格式:PCTF{明文字符串}</p>
+<h3 id="解题过程-12"><a href="#解题过程-12" class="headerlink" title="解题过程"></a>解题过程</h3><p>依旧上RSATool拿到flag</p>
+<h2 id="ROPGadget"><a href="#ROPGadget" class="headerlink" title="ROPGadget"></a>ROPGadget</h2><h3 id="题目描述-分值：50-13"><a href="#题目描述-分值：50-13" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>都说学好汇编是学习PWN的基础，以下有一段ROPGadget的汇编指令序列，请提交其十六进制机器码(大写，不要有空格)</p>
+<p>XCHG EAX,ESP</p>
+<p>RET</p>
+<p>MOV ECX,[EAX]</p>
+<p>MOV [EDX],ECX</p>
+<p>POP EBX</p>
+<p>RET</p>
+<p>提交格式：PCTF{你的答案}</p>
+<h3 id="解题过程-13"><a href="#解题过程-13" class="headerlink" title="解题过程"></a>解题过程</h3><p>打开od，依次输入汇编</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj43e7kolj30bd02t3yb.jpg"><br>左边的机器码组合起来就是flag</p>
+<h2 id="取证"><a href="#取证" class="headerlink" title="取证"></a>取证</h2><h3 id="题目描述-分值：50-14"><a href="#题目描述-分值：50-14" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj43ni3b2j30oc0b2tci.jpg"></p>
+<h3 id="解题过程-14"><a href="#解题过程-14" class="headerlink" title="解题过程"></a>解题过程</h3><p>Google关键词 “内存” “取证”<br>很容易拿到flag<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj43w0yegj30in075dga.jpg"></p>
+<h2 id="熟悉的声音"><a href="#熟悉的声音" class="headerlink" title="熟悉的声音"></a>熟悉的声音</h2><h3 id="题目描述-分值：50-15"><a href="#题目描述-分值：50-15" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>两种不同的元素，如果是声音的话，听起来是不是很熟悉呢，据说前不久神盾局某位特工领便当了大家都很惋惜哦</p>
+<p>XYYY YXXX XYXX XXY XYY X XYY YX YYXX</p>
+<p>请提交PCTF{你的答案}</p>
+<h3 id="解题过程-15"><a href="#解题过程-15" class="headerlink" title="解题过程"></a>解题过程</h3><p>提示说声音，想到摩尔斯电码<br>先转换</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"XYYY YXXX XYXX XXY XYY X XYY YX YYXX"</span>.replace(<span class="string">'X'</span>,<span class="string">'.'</span>).replace(<span class="string">'Y'</span>,<span class="string">'-'</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj446k685j30fn010742.jpg"></p>
+<p>在线解码<br><a href="http://mathsking.net/morse.htm" target="_blank" rel="noopener">摩斯密碼翻譯器</a></p>
+<p>之后进行凯撒密码解密</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj44f20i6j307l0c5glr.jpg"><br>拿到flag</p>
+<h2 id="Baby’s-Crack"><a href="#Baby’s-Crack" class="headerlink" title="Baby’s Crack"></a>Baby’s Crack</h2><h3 id="题目描述-分值：100"><a href="#题目描述-分值：100" class="headerlink" title="题目描述 分值：100"></a>题目描述 分值：100</h3><p>既然是逆向题，我废话就不多说了，自己看着办吧。</p>
+<h3 id="解题过程-16"><a href="#解题过程-16" class="headerlink" title="解题过程"></a>解题过程</h3><p>IDA导入，找到关键点</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj44nvbz6j30c107lmx2.jpg"><br>写出解密脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">enc = <span class="string">"jeihjiiklwjnk&#123;ljj&#123;kflghhj&#123;ilk&#123;k&#123;kij&#123;ihlgkfkhkwhhjgly"</span></span><br><span class="line">flag = <span class="string">''</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> enc:</span><br><span class="line">    <span class="comment">#print i</span></span><br><span class="line">    tmp = ord(i)</span><br><span class="line">    <span class="comment">#print tmp</span></span><br><span class="line">    <span class="keyword">if</span> tmp &gt; <span class="number">100</span> <span class="keyword">and</span> tmp&lt;=<span class="number">149</span>:</span><br><span class="line">        flag += chr(tmp<span class="number">-53</span>)</span><br><span class="line">        <span class="keyword">print</span> chr(tmp<span class="number">-53</span>)</span><br><span class="line">    <span class="keyword">elif</span> tmp &lt;= <span class="number">57</span>:</span><br><span class="line">        flag += chr(tmp - tmp%<span class="number">11</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        flag += chr(tmp + tmp%<span class="number">61</span>)</span><br><span class="line"><span class="keyword">print</span> flag</span><br></pre></td></tr></table></figure>
+
+<p>拿到flag</p>
+<h2 id="Help"><a href="#Help" class="headerlink" title="Help!!"></a>Help!!</h2><h3 id="题目描述-分值：150"><a href="#题目描述-分值：150" class="headerlink" title="题目描述 分值：150"></a>题目描述 分值：150</h3><p>出题人硬盘上找到一个神秘的压缩包，里面有个word文档，可是好像加密了呢~让我们一起分析一下吧！</p>
+<h3 id="解题过程-17"><a href="#解题过程-17" class="headerlink" title="解题过程"></a>解题过程</h3><p>解压得到word的压缩包，<br>压缩包的几种常见套路具体见<a href="http://bobao.360.cn/ctf/detail/203.html" target="_blank" rel="noopener">CTF比赛中关于zip的总结</a></p>
+<p>这里是伪加密，由于我用的是7-zip的解压软件直接无视伪加密；</p>
+<p>解压后得到word文件<br>一开始试了试word隐写，并没有什么用，然后想到word也是压缩包格式，直接解压，最终在一个文件夹中发现flag的图片，拿到flag</p>
+<h2 id="Shellcode"><a href="#Shellcode" class="headerlink" title="Shellcode"></a>Shellcode</h2><h3 id="题目描述-分值：50-16"><a href="#题目描述-分值：50-16" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>作为一个黑客，怎么能不会使用shellcode?</p>
+<p>这里给你一段shellcode，你能正确使用并最后得到flag吗？</p>
+<h3 id="解题过程-18"><a href="#解题过程-18" class="headerlink" title="解题过程"></a>解题过程</h3><p>shellcode不就是非法数据当作代码执行嘛，直接写代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">char</span> shellcode[] = <span class="string">"PYIIIIIIIIIIIIIIII7QZjAXP0A0AkAAQ2AB2BB0BBABXP8ABuJIYIhkmKzyCDq4l4FQyBlrRWEahI1tLKT16Pnk1ftLnkPvwlnkW6fhNkan5pNkgF6XPOR8T5HsCivaN19okQSPlKRLvD6DNk3uelNkpTthRXuQ9znk2jEHLK1Ja0FaXkhcTtBink4tlKUQhnvQYotqo0ylnLMTO0SDEWZahOtMwqhG8kXteksLwTdh1e8aLKsja4uQ8kavLKdLrklK0ZeL7qjKLKUTLKuQM8k9bdvDeL1qiSnR5XVIXTOyjENikrphNnrnVnhlBrzHooKOYoyok93u7tOKCNyHzBBSnguLgTcbyxlNKOYoYoMYaUTHphRL2LupQQ0htsFRTn541x3E2Se5T26PyKK8QLTddJlIZFBvyoSeUTLIkrv0oKy8ORpMmlk7Gl6DBrm8SoyoioyoaxrOqh0XwP1xu1Qw1upBbHrmrED3T34qiKOxQLTdEZOyZCaxQmRxgPUp0hpnPn4srRe8BDSo2PT7axqOCWROpophSYpnSo04u83K72Peu70hBpCsqDpF4qHIMXpLQ429k98aEaJr1BF3Ca3bIozp01IPf0Yof5GxAA"</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   <span class="keyword">int</span> (*ret)() =(<span class="keyword">int</span>(*)())shellcode;</span><br><span class="line"></span><br><span class="line">    ret();</span><br><span class="line">  <span class="comment">//shellcode();</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译执行拿到flag</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj44yelr5j309e05g3yc.jpg"></p>
+<h2 id="A-Piece-Of-Cake"><a href="#A-Piece-Of-Cake" class="headerlink" title="A Piece Of Cake"></a>A Piece Of Cake</h2><h3 id="题目描述-分值：100-1"><a href="#题目描述-分值：100-1" class="headerlink" title="题目描述 分值：100"></a>题目描述 分值：100</h3><p>nit yqmg mqrqn bxw mtjtm nq rqni fiklvbxu mqrqnl xwg dvmnzxu lqjnyxmt xatwnl, rzn nit uxnntm xmt zlzxuuk mtjtmmtg nq xl rqnl. nitmt vl wq bqwltwlzl qw yivbi exbivwtl pzxuvjk xl mqrqnl rzn nitmt vl atwtmxu xamttetwn xeqwa tsftmnl, xwg nit fzruvb, nixn mqrqnl ntwg nq gq lqet qm xuu qj nit jquuqyvwa: xbbtfn tutbnmqwvb fmqamxeevwa, fmqbtll gxnx qm fiklvbxu ftmbtfnvqwl tutbnmqwvbxuuk, qftmxnt xznqwqeqzluk nq lqet gtamtt, eqdt xmqzwg, qftmxnt fiklvbxu fxmnl qj vnltuj qm fiklvbxu fmqbtlltl, ltwlt xwg exwvfzuxnt nitvm twdvmqwetwn, xwg tsivrvn vwntuuvatwn rtixdvqm - tlftbvxuuk rtixdvqm yivbi evevbl izexwl qm qnitm xwvexul. juxa vl lzrlnvnzntfxllvldtmktxlkkqzaqnvn. buqltuk mtuxntg nq nit bqwbtfn qj x mqrqn vl nit jvtug qj lkwnitnvb rvquqak, yivbi lnzgvtl twnvnvtl yiqlt wxnzmt vl eqmt bqefxmxrut nq rtvwal nixw nq exbivwtl.</p>
+<p>提交格式：PCTF{flag}</p>
+<h3 id="解题过程-19"><a href="#解题过程-19" class="headerlink" title="解题过程"></a>解题过程</h3><p>字母频率破解替换加密<br>在线解密<a href="http://quipqiup.com/" target="_blank" rel="noopener">quipqiup</a></p>
+<p>解密后，自己猜想补全<br>拿到解密后的字符串</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">the word robot can refer to both physical robots and virtual software agents, but the latter are usually referred to as bots. there is no consensus on which machines pualify as robots but there is general agreement among experts, and the public, that robots tend to do some or all of the following: accept electronic programming, process data or physical perceptions electronically, operate autonomously to some degree, move around, operate physical parts of itself or physical processes, sense and manipulate their environment, and exhibit intelligent behavior - especially behavior which mimics humans or other animals. flag is substitutepassisveryeasyyougotit. closely related to the concept of a robot is the field of synthetic biology, which studies entities whose nature is more comparable to beings than to machines.</span><br></pre></td></tr></table></figure>
+
+<p>得到flag</p>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="-.-字符串"></a>-.-字符串</h2><h3 id="题目描述-分值：100-2"><a href="#题目描述-分值：100-2" class="headerlink" title="题目描述 分值：100"></a>题目描述 分值：100</h3><p>请选手观察以下密文并转换成flag形式</p>
+<p>..-. .-.. .- –. ….. ..— ..— —– .—- —.. -.. -…. -…. ….. …– —.. –… -.. .—- -.. .- —-. …– .—- —.. .—- ..— -… –… –… –… -…. …– ….- .—- —–</p>
+<p>flag形式为32位大写md5</p>
+<p>题目来源：CFF2016</p>
+<h3 id="解题过程-20"><a href="#解题过程-20" class="headerlink" title="解题过程"></a>解题过程</h3><p>非常明显的摩尔斯密码<br>在线解密即可，之前的题目已经给出链接了<br>拿到flag</p>
+<h2 id="德军的密码"><a href="#德军的密码" class="headerlink" title="德军的密码"></a>德军的密码</h2><h3 id="题目描述-分值：100-3"><a href="#题目描述-分值：100-3" class="headerlink" title="题目描述 分值：100"></a>题目描述 分值：100</h3><p>已知将一个flag以一种加密形式为使用密钥进行加密，使用密钥WELCOMETOCFF加密后密文为 000000000000000000000000000000000000000000000000000101110000110001000000101000000001 请分析出flag。Flag为12位大写字母</p>
+<p>题目来源：CFF2016</p>
+<h3 id="解题过程-21"><a href="#解题过程-21" class="headerlink" title="解题过程"></a>解题过程</h3><p><a href="http://www.360doc.com/content/15/0222/14/21874787_450053353.shtml" target="_blank" rel="noopener">二进制密码</a><br>本题属于费娜姆密码<br>直接上脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#--encoding:utf-8--</span></span><br><span class="line">table = &#123;<span class="string">'A'</span>:<span class="string">'1000001'</span>,<span class="string">'N'</span>:<span class="string">'1001110'</span>,</span><br><span class="line">         <span class="string">'B'</span>:<span class="string">'1000010'</span>,<span class="string">'O'</span>:<span class="string">'1001111'</span>,</span><br><span class="line">         <span class="string">'C'</span>:<span class="string">'1000011'</span>,<span class="string">'P'</span>:<span class="string">'1010000'</span>,</span><br><span class="line">         <span class="string">'D'</span>:<span class="string">'1000100'</span>,<span class="string">'Q'</span>:<span class="string">'1010001'</span>,</span><br><span class="line">         <span class="string">'E'</span>:<span class="string">'1000101'</span>,<span class="string">'R'</span>:<span class="string">'1010010'</span>,</span><br><span class="line">         <span class="string">'F'</span>:<span class="string">'1000110'</span>,<span class="string">'S'</span>:<span class="string">'1010011'</span>,</span><br><span class="line">         <span class="string">'G'</span>:<span class="string">'1000111'</span>,<span class="string">'T'</span>:<span class="string">'1010100'</span>,</span><br><span class="line">         <span class="string">'H'</span>:<span class="string">'1001000'</span>,<span class="string">'U'</span>:<span class="string">'1010101'</span>,</span><br><span class="line">         <span class="string">'I'</span>:<span class="string">'1001001'</span>,<span class="string">'V'</span>:<span class="string">'1010110'</span>,</span><br><span class="line">         <span class="string">'J'</span>:<span class="string">'1001010'</span>,<span class="string">'W'</span>:<span class="string">'1010111'</span>,</span><br><span class="line">         <span class="string">'K'</span>:<span class="string">'1001011'</span>,<span class="string">'X'</span>:<span class="string">'1011000'</span>,</span><br><span class="line">         <span class="string">'L'</span>:<span class="string">'1001100'</span>,<span class="string">'Y'</span>:<span class="string">'1011001'</span>,</span><br><span class="line">         <span class="string">'M'</span>:<span class="string">'1001101'</span>,<span class="string">'Z'</span>:<span class="string">'1011010'</span>&#125;</span><br><span class="line">key_list=[]  </span><br><span class="line">value_list=[]  </span><br><span class="line"><span class="keyword">for</span> key,value <span class="keyword">in</span> table.items():  </span><br><span class="line">    key_list.append(key)  </span><br><span class="line">    value_list.append(value)</span><br><span class="line"><span class="comment">#print key_list, value_list</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_key_of_value</span><span class="params">(value)</span>:</span>  </span><br><span class="line">    <span class="keyword">if</span> value <span class="keyword">in</span> value_list:  </span><br><span class="line">        get_value_index = value_list.index(value)</span><br><span class="line">        <span class="comment">#print type(key_list[get_value_index])</span></span><br><span class="line">        <span class="keyword">return</span> key_list[get_value_index]  </span><br><span class="line">    <span class="keyword">else</span>:  </span><br><span class="line">        <span class="keyword">print</span> <span class="string">"你要查询的值%s不存在"</span> %get_value  </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">how_to</span><span class="params">(a,b)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> a <span class="keyword">in</span> [<span class="string">'0'</span>,<span class="string">'1'</span>] <span class="keyword">and</span> b <span class="keyword">in</span> [<span class="string">'0'</span>,<span class="string">'1'</span>]:</span><br><span class="line">        <span class="keyword">if</span> a == <span class="string">'1'</span> <span class="keyword">and</span> b == <span class="string">'1'</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'0'</span></span><br><span class="line">        <span class="keyword">elif</span> a == <span class="string">'0'</span> <span class="keyword">and</span> b == <span class="string">'0'</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'0'</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">'1'</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">bin_turn</span><span class="params">(arg)</span>:</span></span><br><span class="line">    binstring = <span class="string">''</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> arg:</span><br><span class="line">        binstring += table[i]</span><br><span class="line">    <span class="keyword">return</span> binstring</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">encrypt</span><span class="params">(plain,key)</span>:</span></span><br><span class="line">    binkey = bin_turn(key)</span><br><span class="line">    binplain = bin_turn(plain)</span><br><span class="line">    chiper = <span class="string">''</span></span><br><span class="line">    <span class="keyword">if</span> len(binplain)==len(binkey):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(binplain)):</span><br><span class="line">            chiper += how_to(binkey[i],binplain[i])</span><br><span class="line">            <span class="comment">#print</span></span><br><span class="line">        <span class="keyword">return</span> chiper</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrypt</span><span class="params">(chiper,key)</span>:</span></span><br><span class="line">    binkey = bin_turn(key)</span><br><span class="line">    plain = <span class="string">''</span></span><br><span class="line">    <span class="keyword">if</span> len(chiper)==len(binkey):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">0</span>,len(chiper)):</span><br><span class="line">            plain += how_to(binkey[i],chiper[i])</span><br><span class="line">            <span class="comment">#print binkey[i]</span></span><br><span class="line">        <span class="comment">#print plain</span></span><br><span class="line">        <span class="keyword">return</span> plain</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>  </span><br><span class="line">key = <span class="string">'WELCOMETOCFF'</span></span><br><span class="line">chiper = <span class="string">'000000000000000000000000000000000000000000000000000101110000110001000000101000000001'</span></span><br><span class="line">binplain = decrypt(chiper,key)</span><br><span class="line"><span class="comment">#print type(binplain)</span></span><br><span class="line">plain = <span class="string">''</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>,len(binplain),<span class="number">7</span>):</span><br><span class="line">    plain += str(get_key_of_value(binplain[i:i+<span class="number">7</span>]))</span><br><span class="line"><span class="keyword">print</span> plain</span><br></pre></td></tr></table></figure>
+
+<p>拿到flag</p>
+<h2 id="握手包"><a href="#握手包" class="headerlink" title="握手包"></a>握手包</h2><h3 id="题目描述-分值：100-4"><a href="#题目描述-分值：100-4" class="headerlink" title="题目描述 分值：100"></a>题目描述 分值：100</h3><p>给你握手包，flag是Flag_is_here这个AP的密码，自己看着办吧。<br>提交格式：flag{WIFI密码}</p>
+<h3 id="解题过程-22"><a href="#解题过程-22" class="headerlink" title="解题过程"></a>解题过程</h3><p>破解wpa/wpa2 加密的 wifi密码<br>google一下得到<br><a href="http://topspeedsnail.com/kali-linux-crack-wifi-wpa/" target="_blank" rel="noopener">Kali Linux使用Aircrack破解wifi密码(wpa/wpa2)</a><br>根据链接，依葫芦画瓢，<br>最终执行<br><code>aircrack-ng -a2 -w /usr/share/wordlists/rockyou.txt ./*.cap</code><br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj45c4sgqj30mn09otat.jpg"><br>得到wifi密码</p>
+<p>basic部分over！！！</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Wp/" rel="tag"># Wp</a>
+            
+              <a href="/tags/JarvisOJ/" rel="tag"># JarvisOJ</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/14487155/" rel="next" title="PWN-ROP学习">
+                  <i class="fa fa-chevron-left"></i> PWN-ROP学习
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/b2e629f8/" rel="prev" title="C++虚函数探究">
+                  C++虚函数探究 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#base64"><span class="nav-number">1.</span> <span class="nav-text">base64?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50"><span class="nav-number">1.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程"><span class="nav-number">1.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于USS-Lab"><span class="nav-number">2.</span> <span class="nav-text">关于USS Lab.</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-1"><span class="nav-number">2.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-1"><span class="nav-number">2.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#veryeasy"><span class="nav-number">3.</span> <span class="nav-text">veryeasy</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-2"><span class="nav-number">3.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-2"><span class="nav-number">3.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#段子"><span class="nav-number">4.</span> <span class="nav-text">段子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-3"><span class="nav-number">4.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-3"><span class="nav-number">4.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手贱"><span class="nav-number">5.</span> <span class="nav-text">手贱</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-4"><span class="nav-number">5.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-4"><span class="nav-number">5.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#美丽的实验室logo"><span class="nav-number">6.</span> <span class="nav-text">美丽的实验室logo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-5"><span class="nav-number">6.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-5"><span class="nav-number">6.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#veryeasyRSA"><span class="nav-number">7.</span> <span class="nav-text">veryeasyRSA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-6"><span class="nav-number">7.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-6"><span class="nav-number">7.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#神秘的文件"><span class="nav-number">8.</span> <span class="nav-text">神秘的文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-7"><span class="nav-number">8.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-7"><span class="nav-number">8.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#公倍数"><span class="nav-number">9.</span> <span class="nav-text">公倍数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-8"><span class="nav-number">9.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-8"><span class="nav-number">9.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Easy-Crackme"><span class="nav-number">10.</span> <span class="nav-text">Easy Crackme</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-9"><span class="nav-number">10.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-9"><span class="nav-number">10.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Secret"><span class="nav-number">11.</span> <span class="nav-text">Secret</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-10"><span class="nav-number">11.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-10"><span class="nav-number">11.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#爱吃培根的出题人"><span class="nav-number">12.</span> <span class="nav-text">爱吃培根的出题人</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-11"><span class="nav-number">12.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-11"><span class="nav-number">12.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Easy-RSA"><span class="nav-number">13.</span> <span class="nav-text">Easy RSA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-12"><span class="nav-number">13.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-12"><span class="nav-number">13.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ROPGadget"><span class="nav-number">14.</span> <span class="nav-text">ROPGadget</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-13"><span class="nav-number">14.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-13"><span class="nav-number">14.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#取证"><span class="nav-number">15.</span> <span class="nav-text">取证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-14"><span class="nav-number">15.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-14"><span class="nav-number">15.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#熟悉的声音"><span class="nav-number">16.</span> <span class="nav-text">熟悉的声音</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-15"><span class="nav-number">16.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-15"><span class="nav-number">16.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Baby’s-Crack"><span class="nav-number">17.</span> <span class="nav-text">Baby’s Crack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：100"><span class="nav-number">17.1.</span> <span class="nav-text">题目描述 分值：100</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-16"><span class="nav-number">17.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Help"><span class="nav-number">18.</span> <span class="nav-text">Help!!</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：150"><span class="nav-number">18.1.</span> <span class="nav-text">题目描述 分值：150</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-17"><span class="nav-number">18.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shellcode"><span class="nav-number">19.</span> <span class="nav-text">Shellcode</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：50-16"><span class="nav-number">19.1.</span> <span class="nav-text">题目描述 分值：50</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-18"><span class="nav-number">19.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Piece-Of-Cake"><span class="nav-number">20.</span> <span class="nav-text">A Piece Of Cake</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：100-1"><span class="nav-number">20.1.</span> <span class="nav-text">题目描述 分值：100</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-19"><span class="nav-number">20.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串"><span class="nav-number">21.</span> <span class="nav-text">-.-字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：100-2"><span class="nav-number">21.1.</span> <span class="nav-text">题目描述 分值：100</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-20"><span class="nav-number">21.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#德军的密码"><span class="nav-number">22.</span> <span class="nav-text">德军的密码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：100-3"><span class="nav-number">22.1.</span> <span class="nav-text">题目描述 分值：100</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-21"><span class="nav-number">22.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#握手包"><span class="nav-number">23.</span> <span class="nav-text">握手包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#题目描述-分值：100-4"><span class="nav-number">23.1.</span> <span class="nav-text">题目描述 分值：100</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解题过程-22"><span class="nav-number">23.2.</span> <span class="nav-text">解题过程</span></a></li></ol></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/head.jpg"
+      alt="Simp1er">
+  <p class="site-author-name" itemprop="name">Simp1er</p>
+  <div class="site-description" itemprop="description">L0ve Everything Simp1e</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Simp1er" title="GitHub &rarr; https://github.com/Simp1er" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://twitter.com/Simp1er_sec" title="Twitter &rarr; https://twitter.com/Simp1er_sec" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-Simp1er"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Simp1er</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'be1fedcd1eaf3d18f3c6',
+      clientSecret: '41667bdc1ab3c4f874605e7ad41bce4c6e4adf2a',
+      repo: 'Simp1er/Simp1er.github.io',
+      owner: 'Simp1er',
+      admin: ['Simp1er'],
+      id: 'c4c8ccf8d2df3290972cf27d18ab3c61',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpg?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head.jpg?v=7.4.1">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="angr 安装与简单使用">
+<meta name="keywords" content="reverse,angr,符号执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="angr初探(1)">
+<meta property="og:url" content="https://simp1er.github.io/posts/7359ce02/index.html">
+<meta property="og:site_name" content="Simp1er&#39;s blog">
+<meta property="og:description" content="angr 安装与简单使用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-11T08:56:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="angr初探(1)">
+<meta name="twitter:description" content="angr 安装与简单使用">
+  <link rel="canonical" href="https://simp1er.github.io/posts/7359ce02/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>angr初探(1) | Simp1er's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Simp1er's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+      
+    
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://simp1er.github.io/posts/7359ce02/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Simp1er">
+      <meta itemprop="description" content="L0ve Everything Simp1e">
+      <meta itemprop="image" content="/images/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Simp1er's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            angr初探(1)
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2017-12-11 09:28:33" itemprop="dateCreated datePublished" datetime="2017-12-11T09:28:33+08:00">2017-12-11</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-11 16:56:08" itemprop="dateModified" datetime="2019-07-11T16:56:08+08:00">2019-07-11</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/reverse/" itemprop="url" rel="index">
+                    <span itemprop="name">reverse</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>angr 安装与简单使用</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><h3 id="angr"><a href="#angr" class="headerlink" title="angr"></a>angr</h3><p>总结来说，angr用于逆向工程中进行二进制分析的一个python框架<br>具体介绍见其github主页<a href="https://github.com/angr/angr" target="_blank" rel="noopener">angr</a></p>
+<h3 id="符号执行"><a href="#符号执行" class="headerlink" title="符号执行"></a>符号执行</h3><p>符号执行 （Symbolic Execution）是一种程序分析技术。其可以通过分析程序来得到让特定代码区域执行的输入。使用符号执行分析一个程序时，该程序会使用符号值作为输入，而非一般执行程序时使用的具体值。在达到目标代码时，分析器可以得到相应的路径约束，然后通过约束求解器来得到可以触发目标代码的具体值。   – 摘自维基百科</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>首先安装依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python-dev libffi-dev build-essential virtualenvwrapper</span><br></pre></td></tr></table></figure>
+
+<p>安装angr</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkvirtualenv angr &amp;&amp; pip install angr</span><br></pre></td></tr></table></figure>
+
+<p>这里就出问题了<code>zsh: mkvirtualenv: command not found</code><br>最终google到 <a href="https://stackoverflow.com/questions/13855463/bash-mkvirtualenv-command-not-found#comment64755808_13855464" target="_blank" rel="noopener">bash: mkvirtualenv: command not found</a><br>最终出错原因是因为ubuntu的virtualenvwrapper.sh的位置是不定的，所以mkvirtualenv命令在环境变量中并没有被包含，解决方案为</p>
+<p>1) 首先找到virtualenvwrapper.sh的位置  </p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3d7lnwpj30dy01xdfp.jpg">  </p>
+<p>2) 然后将其加入环境变量</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3dkcqq9j30h001jjr9.jpg"></p>
+<p>3) 最后再执行安装angr那一步</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3e92exoj30kg04x75b.jpg"></p>
+<p>4) 安装好后，呵呵，还是没成功，import的时候，出现如下错误：</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3ev6acfj30n709ldhj.jpg"><br>我的解决方案为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install -I --no-use-wheel capstone</span><br></pre></td></tr></table></figure>
+
+<p>安装成功</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3f9pqtmj309l013a9u.jpg"></p>
+<h2 id="简单使用"><a href="#简单使用" class="headerlink" title="简单使用"></a>简单使用</h2><p>这里以这个链接给的例子来测试<a href="https://github.com/angr/angr-doc/tree/master/examples/sym-write" target="_blank" rel="noopener">sym-write</a><br>先看源码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> u=<span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i, bits[<span class="number">2</span>]=&#123;<span class="number">0</span>,<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;<span class="number">8</span>; i++) &#123;</span><br><span class="line">		bits[(u&amp;(<span class="number">1</span>&lt;&lt;i))!=<span class="number">0</span>]++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (bits[<span class="number">0</span>]==bits[<span class="number">1</span>]) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"you win!"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"you lose!"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体exp为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> angr</span><br><span class="line"><span class="keyword">import</span> claripy</span><br><span class="line"></span><br><span class="line">p = angr.Project(<span class="string">'./issue'</span>)</span><br><span class="line">state = p.factory.entry_state(args=[<span class="string">'./issue'</span>,])</span><br><span class="line"></span><br><span class="line">u = claripy.BVS(<span class="string">'u'</span>,<span class="number">8</span>)</span><br><span class="line"></span><br><span class="line">state.memory.store(<span class="number">0x0804A021</span>,u)</span><br><span class="line">sm = p.factory.simulation_manager(state)</span><br><span class="line">sm.explore(find=<span class="number">0x080484E3</span>,avoid=<span class="number">0x080484F5</span>)</span><br><span class="line"><span class="keyword">if</span> len(sm.found)&gt;<span class="number">0</span>:</span><br><span class="line">    <span class="keyword">print</span> sm.found[<span class="number">0</span>].solver.eval(u)</span><br></pre></td></tr></table></figure>
+
+<p>我们来具体分析以下这个脚本<br><code>import angr</code> 这个自然不用说，导入angr包<br><code>import claripy</code> 这个模块用来来定义抽象的数据，<code>u = claripy.BVS(&#39;u&#39;,8)</code> 这一句即是用claripy这个模块的BVS函数来创建一个指定长度的抽象数据，BVS函数要求两个参数，第一个参数为变量名，第二个参数为变量长度。<br><code>p = angr.Project(&#39;./issue&#39;)</code> 加载一个一个程序，建立一个angr工程<br><code>state = p.factory.entry_state(args=[&#39;./issue&#39;,])</code> 用于指明程序在初始运行时的状态,另外有函数<code>blank_state</code>，可用于指定程序起始运行地址通过给定参数addr的值<br><code>state.memory.store(0x0804A021,u)</code>,将指定data，这里是u，存储到给定地址addr，这里是0x0804A021,  </p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3fop1jej30bw0130sk.jpg"></p>
+<p><code>sm = p.factory.simulation_manager(state)</code> 从给定状态创建了一个模拟器，进行符号执行</p>
+<p><code>sm.explore(find=0x080484E3,avoid=0x080484F5)</code> 进行符号执行得到想要的状态，这里的两个地址为   </p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3g0wmvlj30jg08gmxr.jpg"></p>
+<p>即要产生win的状态，而避免lose的状态</p>
+<p>最终sm.found 用于存储我们想要的状态，通过if判断其长度，从而确定能否得到我们想要的状态</p>
+<p><code>sm.found[0].solver.eval(u)</code> sm.found[0].solver 用于存储状态的解，而eval函数则输入参数的值</p>
+<h2 id="局部总结"><a href="#局部总结" class="headerlink" title="局部总结"></a>局部总结</h2><p>以上就是angr的基本用法，本人对于angr的理解很浅显，有些地方也不是特别清楚，如果有错的地方，希望大家指点。以后会继续放出其他的关于angr的使用简介</p>
+<h2 id="更正"><a href="#更正" class="headerlink" title="更正"></a>更正</h2><p>由于直接<code>sudo apt-get install virtualenv</code>会后续出现各种问题，这里最后我google到安装angr的新方法：采用pip去安装virtualenv和virtualenvwrapper,具体命令如下</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get remove virtualenv virtualenvwrapper</span><br><span class="line">pip  install virtualenv virtualenvwrapper</span><br></pre></td></tr></table></figure>
+
+<p>安装完成后<br>配置.zshrc(terminal若为bash，则配置.bash_profile)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># virtualenvwrapper </span><br><span class="line">export WORKON_HOME=$HOME/.virtualenvs</span><br><span class="line">export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python   #python目录</span><br><span class="line">export VIRTUALENVWRAPPER_VIRTUALENV=/usr/local/bin/virtualenv # virtualenv 目录</span><br><span class="line">source /usr/local/bin/virtualenvwrapper.sh #virtualenvwrapper.sh文件所在位置，方法如上</span><br></pre></td></tr></table></figure>
+
+<p>亲测成功，这里就不截图了。<br>最后贴上链接<a href="https://stackoverflow.com/questions/19549824/terminal-issue-with-virtualenvwrapper-after-mavericks-upgrade" target="_blank" rel="noopener">Terminal issue with virtualenvwrapper after Mavericks Upgrade
+</a>，仅供参考。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/reverse/" rel="tag"># reverse</a>
+            
+              <a href="/tags/angr/" rel="tag"># angr</a>
+            
+              <a href="/tags/符号执行/" rel="tag"># 符号执行</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/79052cf2/" rel="next" title="一个简单的linux调试器-part-1">
+                  <i class="fa fa-chevron-left"></i> 一个简单的linux调试器-part-1
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/Infinity/" rel="prev" title="angr学习_2">
+                  angr学习_2 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#angr"><span class="nav-number">1.1.</span> <span class="nav-text">angr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#符号执行"><span class="nav-number">1.2.</span> <span class="nav-text">符号执行</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单使用"><span class="nav-number">3.</span> <span class="nav-text">简单使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#局部总结"><span class="nav-number">4.</span> <span class="nav-text">局部总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更正"><span class="nav-number">5.</span> <span class="nav-text">更正</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/head.jpg"
+      alt="Simp1er">
+  <p class="site-author-name" itemprop="name">Simp1er</p>
+  <div class="site-description" itemprop="description">L0ve Everything Simp1e</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Simp1er" title="GitHub &rarr; https://github.com/Simp1er" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://twitter.com/Simp1er_sec" title="Twitter &rarr; https://twitter.com/Simp1er_sec" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-Simp1er"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Simp1er</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'be1fedcd1eaf3d18f3c6',
+      clientSecret: '41667bdc1ab3c4f874605e7ad41bce4c6e4adf2a',
+      repo: 'Simp1er/Simp1er.github.io',
+      owner: 'Simp1er',
+      admin: ['Simp1er'],
+      id: '900d5516314ab8858e3d43b0f7debf4d',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>

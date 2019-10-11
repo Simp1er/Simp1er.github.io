@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/head.jpg?v=7.4.1">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/head.jpg?v=7.4.1">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="记录调试器的学习，既然是自己的读书笔记，我就记录自己不会的和想弄懂的部分，大牛勿喷">
+<meta name="keywords" content="linux,debugger">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个简单的linux调试器-part-1">
+<meta property="og:url" content="https://simp1er.github.io/posts/79052cf2/index.html">
+<meta property="og:site_name" content="Simp1er&#39;s blog">
+<meta property="og:description" content="记录调试器的学习，既然是自己的读书笔记，我就记录自己不会的和想弄懂的部分，大牛勿喷">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-11T08:56:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一个简单的linux调试器-part-1">
+<meta name="twitter:description" content="记录调试器的学习，既然是自己的读书笔记，我就记录自己不会的和想弄懂的部分，大牛勿喷">
+  <link rel="canonical" href="https://simp1er.github.io/posts/79052cf2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>一个简单的linux调试器-part-1 | Simp1er's blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Simp1er's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+      
+    
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://simp1er.github.io/posts/79052cf2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Simp1er">
+      <meta itemprop="description" content="L0ve Everything Simp1e">
+      <meta itemprop="image" content="/images/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Simp1er's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            一个简单的linux调试器-part-1
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2017-11-27 09:29:38" itemprop="dateCreated datePublished" datetime="2017-11-27T09:29:38+08:00">2017-11-27</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-11 16:56:08" itemprop="dateModified" datetime="2019-07-11T16:56:08+08:00">2019-07-11</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index">
+                    <span itemprop="name">linux</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>记录调试器的学习，既然是自己的读书笔记，我就记录自己不会的和想弄懂的部分，大牛勿喷</p>
+</blockquote>
+<a id="more"></a>
+
+<blockquote>
+<p>原文地址：<a href="https://blog.tartanllama.xyz/writing-a-linux-debugger-setup/" target="_blank" rel="noopener">https://blog.tartanllama.xyz/writing-a-linux-debugger-setup/</a></p>
+</blockquote>
+<h2 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h2><p>两个github项目的导入<br><a href="https://github.com/antirez/linenoise" target="_blank" rel="noopener">Linenoise</a> 用来处理命令行输入相关的部分，包括自动补全，历史记录等等<br><a href="https://github.com/TartanLlama/libelfin/tree/fbreg" target="_blank" rel="noopener">libelfin</a> 处理调试符号部分所需头文件</p>
+<h2 id="正式开始"><a href="#正式开始" class="headerlink" title="正式开始"></a>正式开始</h2><p>一个调试器的框架:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (argc &lt; <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"Program name not specified"</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">auto</span> prog = argv[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">auto</span> pid = fork();</span><br><span class="line">  <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">//we're in the child process</span></span><br><span class="line">    <span class="comment">//execute debugee</span></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (pid &gt;= <span class="number">1</span>)  &#123;</span><br><span class="line">    <span class="comment">//we're in the parent process</span></span><br><span class="line">    <span class="comment">//execute debugger</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>先说题外，关键字auto用于声明变量的生存期为自动，所有的变量默认就是auto的。没有任何意义<br>进入正题，先是一个fork函数。<br>先看fork函数，其原型<code>pid_t fork( void)</code><br>大概就是，进程通过fork函数获得一个新进程，返回两次，一次返回到父进程，还有一次子进程<br>两次返回的唯一区别是子进程中返回0值而父进程中返回子进程ID。<br>接下来的if-else很明显是分别处理子父进程的</p>
+<p>既然写的是调试器，那么父进程是属于调试器，那么子进程就必须加载被调试进程<br>这个时候</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ptrace(PTRACE_TRACEME, <span class="number">0</span>, <span class="literal">nullptr</span>, <span class="literal">nullptr</span>);</span><br><span class="line">execl(prog, prog, <span class="literal">nullptr</span>);</span><br></pre></td></tr></table></figure>
+
+<p>我们查看一下ptrace函数的原型，  </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">ptrace</span><span class="params">(<span class="keyword">int</span> request, <span class="keyword">pid_t</span> pid, <span class="keyword">void</span> * addr, <span class="keyword">void</span> * data)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>ptrace 百度百科的简单解释为进程跟踪，可以用来跟踪进程，可以用来跟踪子进程的运行，包括读取子进程寄存器的值，对子进程执行单步功能；<br>具体执行行为取决于ptrace函数的第一个参数request，经常用的有PTRACE_ME 这个参数通常由子进程调用，用来告诉父进程：来跟踪我吧。。。，这个时候其他参数是无所谓的了<br>再有PTRACE_PEEKUSER参数，可以用来读取寄存器的值，因为发生系统调用后，计算机会将系统调用号保留到寄存器eax中；而这个参数可以用来读取这个系统调用号的。等等<br>更多参见<br><a href="http://blog.csdn.net/edonlii/article/details/8717029" target="_blank" rel="noopener">ptrace运行原理及使用详解</a><br><a href="http://blog.csdn.net/u012417380/article/details/60468697" target="_blank" rel="noopener">Linux源码分析之Ptrace</a><br>pid参数，则是指被跟踪进程的进程ID,addr参数则是一个内存地址，data参数则是指某些特殊request的resources<br>而execl函数则是用来运行指定程序的，由第一个参数和第二个参数指定具体程序<br>这样就实现了进程附载<br>这样就实现了子进程的部分，接下来来看父进程部分<br>如作者所写，为了与子进程进行通信交互；作者建了一个debugger类，并且添加了一个类函数run用来循环监听用户输入，以便由用户进行单步、下断点等操作。并且通过父进程在main函数中执行这个类函数。debugger类的大体代码如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">debugger</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    debugger (<span class="built_in">std</span>::<span class="built_in">string</span> prog_name, <span class="keyword">pid_t</span> pid)</span><br><span class="line">        : m_prog_name&#123;<span class="built_in">std</span>::move(prog_name)&#125;, m_pid&#123;pid&#125; &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">      <span class="keyword">int</span> wait_status;</span><br><span class="line">      <span class="keyword">auto</span> options = <span class="number">0</span>;</span><br><span class="line">      waitpid(m_pid, &amp;wait_status, options);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">char</span>* line = <span class="literal">nullptr</span>;</span><br><span class="line">      <span class="keyword">while</span>((line = linenoise(<span class="string">"minidbg&gt; "</span>)) != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">          handle_command(line);</span><br><span class="line">          linenoiseHistoryAdd(line);</span><br><span class="line">          linenoiseFree(line);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> m_prog_name;</span><br><span class="line">    <span class="keyword">pid_t</span> m_pid;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>首先，当被调试的进程执行后，它将发出一个<code>SIGTRAP</code>信号，用来表示被跟踪或遇到断点，而<code>waitpid</code>函数就是用来等待这个信号的，<code>waitpid</code>具体分析见<a href="http://blog.csdn.net/wallwind/article/details/6998602" target="_blank" rel="noopener">深入浅出—unix多进程编程之wait()和waitpid()函数</a><br>我们主要关注的是这个循环，首先这个循环是一直等待用户输入直到输入EOF,方才退出循环的。<br>再看循环内部，首先一个handle_command函数，毫无疑问是根据我们约定的符号进入对应的命令处理的，包括单步、断点等等，这个函数具体代码如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> debugger::handle_command(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; line) &#123;</span><br><span class="line">    <span class="keyword">auto</span> args = split(line,<span class="string">' '</span>);</span><br><span class="line">    <span class="keyword">auto</span> command = args[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (is_prefix(command, <span class="string">"continue"</span>)) &#123;</span><br><span class="line">        continue_execution();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cerr</span> &lt;&lt; <span class="string">"Unknown command\n"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而后就用到了我们之前用的两个支持库之一用来将命令加入历史，并释放资源</p>
+<h2 id="处理输入"><a href="#处理输入" class="headerlink" title="处理输入"></a>处理输入</h2><p>最后，这一部分，处理问题，实质上就是处理输入的字符串，不同的字符串对应不同命令处理流程，作者为了接近与gdb和lldb用了类似的字符串，  其处理函数handle_command 上面已给出<br>我们来看看这个部分函数,split函数和is_prefix函数就不具体分析，代码如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; split(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s, <span class="keyword">char</span> delimiter) &#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt; out&#123;&#125;;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">stringstream</span> ss &#123;s&#125;;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> item;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="built_in">std</span>::getline(ss,item,delimiter)) &#123;</span><br><span class="line">        out.push_back(item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> out;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">is_prefix</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; s, <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; of)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (s.size() &gt; of.size()) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">std</span>::equal(s.begin(), s.end(), of.begin());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们具体看看<code>continue_execution</code>函数，先放代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> debugger::continue_execution() &#123;</span><br><span class="line">    ptrace(PTRACE_CONT, m_pid, <span class="literal">nullptr</span>, <span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> wait_status;</span><br><span class="line">    <span class="keyword">auto</span> options = <span class="number">0</span>;</span><br><span class="line">    waitpid(m_pid, &amp;wait_status, options);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于是对子进程的操作，那么有用到了我们的ptrace函数，这里第一个request参数用的是<code>PTRACE_CONT</code>，用来继续子进程，接下来的waitpid函数又是用来等待信号的.</p>
+<p>至此，第一部分分析完毕，在下分析浅薄，如有不对或者不够好的地方，望指摘。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/linux/" rel="tag"># linux</a>
+            
+              <a href="/tags/debugger/" rel="tag"># debugger</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/6cc7b2f3/" rel="next" title="搭建自己的linux">
+                  <i class="fa fa-chevron-left"></i> 搭建自己的linux
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/7359ce02/" rel="prev" title="angr初探(1)">
+                  angr初探(1) <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前提准备"><span class="nav-number">1.</span> <span class="nav-text">前提准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正式开始"><span class="nav-number">2.</span> <span class="nav-text">正式开始</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理输入"><span class="nav-number">3.</span> <span class="nav-text">处理输入</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/head.jpg"
+      alt="Simp1er">
+  <p class="site-author-name" itemprop="name">Simp1er</p>
+  <div class="site-description" itemprop="description">L0ve Everything Simp1e</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Simp1er" title="GitHub &rarr; https://github.com/Simp1er" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://twitter.com/Simp1er_sec" title="Twitter &rarr; https://twitter.com/Simp1er_sec" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-Simp1er"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Simp1er</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'be1fedcd1eaf3d18f3c6',
+      clientSecret: '41667bdc1ab3c4f874605e7ad41bce4c6e4adf2a',
+      repo: 'Simp1er/Simp1er.github.io',
+      owner: 'Simp1er',
+      admin: ['Simp1er'],
+      id: '3b3675476740ef76e327daa7a4695ef5',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>
