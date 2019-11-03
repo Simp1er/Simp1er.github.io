@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="前言最近一直在折腾这个android源码从Mac到docker再到ubuntu14.04，最后换了ubuntu 16.04，前前后后花了大概2个星期，感觉自己就是自带bug的男人。。。呵呵了，记录一下吧">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ubuntu 16.04编译android6.0.0_r1">
+<meta property="og:url" content="https://simp1er.github.io/posts/6c97638a/index.html">
+<meta property="og:site_name" content="Simp1er&#39;s blog">
+<meta property="og:description" content="前言最近一直在折腾这个android源码从Mac到docker再到ubuntu14.04，最后换了ubuntu 16.04，前前后后花了大概2个星期，感觉自己就是自带bug的男人。。。呵呵了，记录一下吧">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-03T06:18:38.984Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ubuntu 16.04编译android6.0.0_r1">
+<meta name="twitter:description" content="前言最近一直在折腾这个android源码从Mac到docker再到ubuntu14.04，最后换了ubuntu 16.04，前前后后花了大概2个星期，感觉自己就是自带bug的男人。。。呵呵了，记录一下吧">
+  <link rel="canonical" href="https://simp1er.github.io/posts/6c97638a/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>ubuntu 16.04编译android6.0.0_r1 | Simp1er's blog</title>
+  
+    <script>
+      function sendPageView() {
+        var host = window.location.hostname;
+        if (host == "localhost" && true) return;
+        var uid = localStorage.getItem('uid') || (Math.random() + '.' + Math.random());
+        localStorage.setItem('uid', uid);
+        navigator.sendBeacon('https://www.google-analytics.com/collect', new URLSearchParams({
+          v  : 1,
+          tid: 'UA-149875604-1',
+          cid: uid,
+          t  : 'pageview',
+          dp : encodeURIComponent(location.pathname)
+        }));
+      }
+      document.addEventListener('pjax:complete', sendPageView);
+      sendPageView();
+    </script>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?08da9520b0dbc7060ec21e5f5abb9af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Simp1er's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+      
+    
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://simp1er.github.io/posts/6c97638a/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Simp1er">
+      <meta itemprop="description" content="L0ve Everything Simp1e">
+      <meta itemprop="image" content="/images/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Simp1er's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            ubuntu 16.04编译android6.0.0_r1
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-03 13:58:05 / 修改时间：14:18:38" itemprop="dateCreated datePublished" datetime="2019-11-03T13:58:05+08:00">2019-11-03</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近一直在折腾这个android源码从Mac到docker再到ubuntu14.04，最后换了ubuntu 16.04，前前后后花了大概2个星期，感觉自己就是自带bug的男人。。。呵呵了，记录一下吧</p>
+<a id="more"></a>
+<h3 id="虚拟机安装"><a href="#虚拟机安装" class="headerlink" title="虚拟机安装"></a>虚拟机安装</h3><p>安装虚拟机ubuntu 16.04，并分配200G的硬盘空间，3个处理器，以及4g的内存。</p>
+<h3 id="安装jdk7"><a href="#安装jdk7" class="headerlink" title="安装jdk7"></a>安装jdk7</h3><p>安装openjdk7</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo add-apt-repository ppa:openjdk-r/ppa</span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install openjdk-7-jdk</span><br></pre></td></tr></table></figure>
+
+<p>配置OpenJDK.打开/etc/profile文件:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit /etc/profile</span><br></pre></td></tr></table></figure>
+
+<p>在末尾追加下面代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64</span><br><span class="line">export JRE_HOME=$&#123;JAVA_HOME&#125;/jre </span><br><span class="line">export CLASSPATH=.:$&#123;JAVA_HOME&#125;/lib:$&#123;JRE_HOME&#125;/lib </span><br><span class="line">export PATH=$&#123;JAVA_HOME&#125;/bin:$PATH</span><br></pre></td></tr></table></figure>
+
+<p>最终效果<br><img alt data-src="/images/openjdk.jpg"></p>
+<h3 id="下载依赖包"><a href="#下载依赖包" class="headerlink" title="下载依赖包"></a>下载依赖包</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -y git flex bison gperf build-essential libncurses5-dev:i386 </span><br><span class="line">sudo apt-get install libx11-dev:i386 libreadline6-dev:i386 libgl1-mesa-dev g++-multilib </span><br><span class="line">sudo apt-get install tofrodos python-markdown libxml2-utils xsltproc zlib1g-dev:i386 </span><br><span class="line">sudo apt-get install dpkg-dev libsdl1.2-dev libesd0-dev</span><br><span class="line">sudo apt-get install git-core gnupg flex bison gperf build-essential  </span><br><span class="line">sudo apt-get install zip curl zlib1g-dev gcc-multilib g++-multilib </span><br><span class="line">sudo apt-get install libc6-dev-i386 </span><br><span class="line">sudo apt-get install lib32ncurses5-dev x11proto-core-dev libx11-dev </span><br><span class="line">sudo apt-get install lib32z-dev ccache</span><br><span class="line">sudo apt-get install libgl1-mesa-dev libxml2-utils xsltproc unzip m4</span><br></pre></td></tr></table></figure>
+
+<h3 id="repo工具下载-amp-amp-配置git用户名"><a href="#repo工具下载-amp-amp-配置git用户名" class="headerlink" title="repo工具下载&amp;&amp;配置git用户名"></a>repo工具下载&amp;&amp;配置git用户名</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/bin</span><br><span class="line">PATH=~/bin:<span class="variable">$PATH</span></span><br><span class="line">curl https://mirrors.tuna.tsinghua.edu.cn/git/git-repo -o repo</span><br><span class="line">chmod +x repo</span><br><span class="line">git config --global user.name <span class="string">"Simp1er"</span></span><br><span class="line">git config --global user.email <span class="string">"simp1er_sec@163.com"</span></span><br></pre></td></tr></table></figure>
+
+<p>静待下载完毕</p>
+<h3 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir <span class="built_in">source</span></span><br><span class="line"><span class="built_in">cd</span> ./<span class="built_in">source</span></span><br><span class="line"><span class="built_in">echo</span> <span class="built_in">export</span> REPO_URL=https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/ &gt;&gt; ~/.bashrc</span><br><span class="line">repo init -u https://aosp.tuna.tsinghua.edu.cn/platform/manifest -b android-6.0.0_r1 --depth=1</span><br><span class="line"></span><br><span class="line">repo sync</span><br></pre></td></tr></table></figure>
+
+<p>静待下载完毕，为了进一步让我们的代码可以在真机上运行，仅仅是下载这部分源码是不够的，我们还需要下载对应的二进制驱动，这里由于我的测试机为<code>Nexus 5</code>,我们从<a href="https://developers.google.com/android/drivers#hammerheadmra58k" target="_blank" rel="noopener">这里</a>下载对应的二进制驱动并解压到源码目录下,并分别运行三个shell文件，<br><img alt data-src="/images/driver-nexus5.jpg"><br>最后解压出vender目录到当前目录<br><code>repo sync</code>出现错误<br>‘’’<br>get: error: RPC failed;<br>curl 56 GnuTLS recv error (-12): A TLS fatal alert has been received.<br>fatal: The remote end hung up unexpectedly<br>fatal: The remote end hung up<br>‘’’<br>解决办法</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global http.sslVerify <span class="literal">false</span></span><br><span class="line">git config --global http.postBuffer 1048576000</span><br></pre></td></tr></table></figure>
+
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><p>设置编译器缓存</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> USE_CCACHE=1</span><br><span class="line"><span class="built_in">export</span> CCACHE_DIR=ccache</span><br><span class="line">prebuilts/misc/linux-x86/ccache/ccache -M 50G</span><br></pre></td></tr></table></figure>
+
+<p>导入android源码所需环境</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span> build/envsetup.sh //配置android源码所需环境变量以及其他</span><br></pre></td></tr></table></figure>
+
+<p>选择编译目标<br><img alt data-src="/images/lunch.jpg"><br>这里我们选择userdebug模式</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lunch aosp_hammerhead-userdebug</span><br></pre></td></tr></table></figure>
+
+<p><img alt data-src="/images/lunch_result.jpg"><br>最后编译</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make -j6</span><br></pre></td></tr></table></figure>
+
+<p>这里的<code>6</code>根据CPU核心个数乘以2加二，最后坐看听着风扇呼呼的吹，然后静待编译成功。<br><img alt data-src="/images/result_source.jpg"></p>
+<p>编译过程中出现错误</p>
+<h4 id="make-fork-Cannot-allocate-memory"><a href="#make-fork-Cannot-allocate-memory" class="headerlink" title="make: fork: Cannot allocate memory"></a><code>make: fork: Cannot allocate memory</code></h4><p><img alt data-src="/images/error_allocate_memory.jpg"><br>原因： 内存不够<br>解决办法： 关机，增加虚拟机内存大小为8g</p>
+<h4 id="clang-error-linker-command-failed-with-exit-code"><a href="#clang-error-linker-command-failed-with-exit-code" class="headerlink" title="clang: error: linker command failed with exit code"></a>clang: error: linker command failed with exit code</h4><p>貌似这是一个ubuntu 16.04会出现的问题，最终解决办法是将<code>art/build/Android.common_build.mk</code>文件第75行<code>ifneq ($(WITHOUT_HOST_CLANG),true)</code>改为<code>ifeq ($(WITHOUT_HOST_CLANG),false)</code></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p><a href="https://bbs.pediy.com/thread-254834.htm" target="_blank" rel="noopener">Ubuntu 18.04.3 LTS 编译安卓6.0.0_r1</a></p>
+<p><a href="https://bbs.pediy.com/thread-218513.htm" target="_blank" rel="noopener">记一次安卓系统源码编译刷机过程。</a></p>
+<p><a href="https://ichrisking.github.io/2017/08/25/rom7.0-build/" target="_blank" rel="noopener">Android7.0Rom编译相关</a></p>
+<p><a href="https://my.oschina.net/chunquedong/blog/736257" target="_blank" rel="noopener">编译Android源码的坑</a></p>
+<p><a href="https://stackoverflow.com/questions/38378914/git-error-rpc-failed-curl-56-gnutls" target="_blank" rel="noopener">git error: RPC failed; curl 56 GnuTLS
+</a></p>
+<p><a href="https://item.jd.com/12522178.html" target="_blank" rel="noopener">Android软件安全权威指南(jd链接)</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Android/" rel="tag"># Android</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/8483f66b/" rel="next" title="IDA 动态调试so文件从入门到放弃">
+                  <i class="fa fa-chevron-left"></i> IDA 动态调试so文件从入门到放弃
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟机安装"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟机安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装jdk7"><span class="nav-number">1.2.</span> <span class="nav-text">安装jdk7</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载依赖包"><span class="nav-number">1.3.</span> <span class="nav-text">下载依赖包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#repo工具下载-amp-amp-配置git用户名"><span class="nav-number">1.4.</span> <span class="nav-text">repo工具下载&amp;&amp;配置git用户名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载源码"><span class="nav-number">1.5.</span> <span class="nav-text">下载源码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译"><span class="nav-number">1.6.</span> <span class="nav-text">编译</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#make-fork-Cannot-allocate-memory"><span class="nav-number">1.6.1.</span> <span class="nav-text">make: fork: Cannot allocate memory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#clang-error-linker-command-failed-with-exit-code"><span class="nav-number">1.6.2.</span> <span class="nav-text">clang: error: linker command failed with exit code</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">2.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/head.jpg"
+      alt="Simp1er">
+  <p class="site-author-name" itemprop="name">Simp1er</p>
+  <div class="site-description" itemprop="description">L0ve Everything Simp1e</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Simp1er" title="GitHub &rarr; https://github.com/Simp1er" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://twitter.com/Simp1er_sec" title="Twitter &rarr; https://twitter.com/Simp1er_sec" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-Simp1er"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Simp1er</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'be1fedcd1eaf3d18f3c6',
+      clientSecret: '41667bdc1ab3c4f874605e7ad41bce4c6e4adf2a',
+      repo: 'Simp1er.github.io',
+      owner: 'Simp1er',
+      admin: ['Simp1er'],
+      id: '3c73b64c5e9dc486ff234d090cee3f83',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>
