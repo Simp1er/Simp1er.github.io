@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="从本篇博客开始，我们以实例的形式来了解angr，期待共同学习，共同进步">
+<meta name="keywords" content="reverse,angr,符号执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="angr学习_2">
+<meta property="og:url" content="https://simp1er.github.io/posts/null/index.html">
+<meta property="og:site_name" content="Simp1er&#39;s blog">
+<meta property="og:description" content="从本篇博客开始，我们以实例的形式来了解angr，期待共同学习，共同进步">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-11T08:56:08.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="angr学习_2">
+<meta name="twitter:description" content="从本篇博客开始，我们以实例的形式来了解angr，期待共同学习，共同进步">
+  <link rel="canonical" href="https://simp1er.github.io/posts/null/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>angr学习_2 | Simp1er's blog</title>
+  
+    <script>
+      function sendPageView() {
+        var host = window.location.hostname;
+        if (host == "localhost" && true) return;
+        var uid = localStorage.getItem('uid') || (Math.random() + '.' + Math.random());
+        localStorage.setItem('uid', uid);
+        navigator.sendBeacon('https://www.google-analytics.com/collect', new URLSearchParams({
+          v  : 1,
+          tid: 'UA-149875604-1',
+          cid: uid,
+          t  : 'pageview',
+          dp : encodeURIComponent(location.pathname)
+        }));
+      }
+      document.addEventListener('pjax:complete', sendPageView);
+      sendPageView();
+    </script>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?08da9520b0dbc7060ec21e5f5abb9af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Simp1er's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+      
+    
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://simp1er.github.io/posts/null/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Simp1er">
+      <meta itemprop="description" content="L0ve Everything Simp1e">
+      <meta itemprop="image" content="/images/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Simp1er's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            angr学习_2
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2017-12-20 04:32:31" itemprop="dateCreated datePublished" datetime="2017-12-20T04:32:31+08:00">2017-12-20</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-11 16:56:08" itemprop="dateModified" datetime="2019-07-11T16:56:08+08:00">2019-07-11</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/reverse/" itemprop="url" rel="index">
+                    <span itemprop="name">reverse</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>从本篇博客开始，我们以实例的形式来了解angr，期待共同学习，共同进步</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="XCTF嘉年华体验-re1"><a href="#XCTF嘉年华体验-re1" class="headerlink" title="XCTF嘉年华体验-re1"></a>XCTF嘉年华体验-re1</h2><p>很简单的一个逆向题目</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3gu10z9j30tn07pt8t.jpg"></p>
+<p>看伪代码，很明显，是通过以参数作为输入，输入应为一个四位整数，通过各位的判断是否满足条件，最终确定correct还是wrong<br>直接上脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> thousand <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">10</span>):</span><br><span class="line">    <span class="keyword">for</span> hundred <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">10</span>):</span><br><span class="line">        <span class="keyword">for</span> ten <span class="keyword">in</span> xrange(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">            <span class="keyword">for</span> num <span class="keyword">in</span> xrange(<span class="number">1</span>,<span class="number">10</span>):</span><br><span class="line">                <span class="keyword">if</span> num + thousand + ten + hundred == <span class="number">23</span> <span class="keyword">and</span> ten / num == <span class="number">2</span> <span class="keyword">and</span> hundred - ten == <span class="number">-1</span> <span class="keyword">and</span> thousand % ten == <span class="number">3</span>:</span><br><span class="line">                    <span class="keyword">print</span> thousand,hundred,ten,num</span><br><span class="line">                    <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+
+<p>得到答案<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3h89ywpj30bz01cq2p.jpg">   </p>
+<p>验证下</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3hj2sznj309h01mglh.jpg"></p>
+<p>但是这不是我们这篇文章的主要意图，这个题目特别简单，只要会编程并且了解点逆向，这个题目都很容易解出来了，下面我们进入正题，用angr求解<br>我们还是先上脚本，再进行分析</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> angr</span><br><span class="line"></span><br><span class="line">p = angr.Project(<span class="string">'./ppp'</span>)</span><br><span class="line">state = p.factory.entry_state()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> xrange(<span class="number">4</span>):</span><br><span class="line">	  k = state.posix.files[<span class="number">0</span>].read_from(<span class="number">1</span>)</span><br><span class="line">	  state.se.add(k&gt;<span class="number">47</span>)</span><br><span class="line"></span><br><span class="line">k = state.posix.files[<span class="number">0</span>].read_from(<span class="number">1</span>)</span><br><span class="line">state.se.add(k==<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line">state.posix.files[<span class="number">0</span>].seek(<span class="number">0</span>)</span><br><span class="line">state.posix.files[<span class="number">0</span>].length = <span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">'[*] simulation_manager start...............'</span></span><br><span class="line"></span><br><span class="line">sm = p.factory.simulation_manager(state)</span><br><span class="line"></span><br><span class="line">sm.explore(find=<span class="number">0x08048692</span>,avoid=<span class="number">0x080486A5</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> len(sm.found)&gt;<span class="number">0</span>:</span><br><span class="line">	inp = sm.found[<span class="number">0</span>].posix.files[<span class="number">0</span>].all_bytes()</span><br><span class="line">	<span class="keyword">print</span> sm.found[<span class="number">0</span>].solver.eval(inp,cast_to = str)</span><br><span class="line"></span><br><span class="line"><span class="keyword">print</span> <span class="string">'[*] end angr.....'</span></span><br></pre></td></tr></table></figure>
+
+<p>我们直接从之前未接触过的开始</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> xrange(<span class="number">4</span>):</span><br><span class="line">	  k = state.posix.files[<span class="number">0</span>].read_from(<span class="number">1</span>)</span><br><span class="line">	  state.se.add(k&gt;<span class="number">47</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这个部分是用来获取标准输入并且对其长度，范围进行限制的部分，<code>xrange(4)</code>函数后面的4是用来表示获取4位标准输入，并且<code>state.posix.files[0].read_from(1)</code>，这个部分设置工程文件固定读取标准输入一个字节，，最后通过<code>add()</code>函数对读取的字节进行限制，由于我们的输入限定于数字0~9,所有限定输入一定大于47.<br><code>state.se.add(k==10)</code>,换行符表示输入结束   </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">state.posix.files[<span class="number">0</span>].seek(<span class="number">0</span>)</span><br><span class="line">state.posix.files[<span class="number">0</span>].length = <span class="number">5</span></span><br></pre></td></tr></table></figure>
+
+<p>这个部分用于限定输入字符长度从起始位置计数一定为5位</p>
+<p><code>inp = sm.found[0].posix.files[0].all_bytes()</code>，读取得到第一个解的所有标准输入<br><code>print sm.found[0].solver.eval(inp,cast_to = str)</code>,以字符形式输出我的输入</p>
+<p><code>sm.explore(find=0x08048692,avoid=0x080486A5)</code>,中地址分别为correct和wrong的分支</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3huy7z1j30nl09ojrs.jpg"></p>
+<p>最终执行结果如图</p>
+<p><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj3i44m5cj30gc02ljrc.jpg"></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/reverse/" rel="tag"># reverse</a>
+            
+              <a href="/tags/angr/" rel="tag"># angr</a>
+            
+              <a href="/tags/符号执行/" rel="tag"># 符号执行</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/7359ce02/" rel="next" title="angr初探(1)">
+                  <i class="fa fa-chevron-left"></i> angr初探(1)
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/posts/f50a3e9d/" rel="prev" title="linux端口复用">
+                  linux端口复用 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+    <div class="comments" id="gitalk-container"></div>
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#XCTF嘉年华体验-re1"><span class="nav-number">1.</span> <span class="nav-text">XCTF嘉年华体验-re1</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/head.jpg"
+      alt="Simp1er">
+  <p class="site-author-name" itemprop="name">Simp1er</p>
+  <div class="site-description" itemprop="description">L0ve Everything Simp1e</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives">
+        
+          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Simp1er" title="GitHub &rarr; https://github.com/Simp1er" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://twitter.com/Simp1er_sec" title="Twitter &rarr; https://twitter.com/Simp1er_sec" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-Simp1er"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Simp1er</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'be1fedcd1eaf3d18f3c6',
+      clientSecret: '41667bdc1ab3c4f874605e7ad41bce4c6e4adf2a',
+      repo: 'Simp1er.github.io',
+      owner: 'Simp1er',
+      admin: ['Simp1er'],
+      id: '50219a53185173117942011c916c87f3',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
+
+</body>
+</html>
