@@ -51,17 +51,19 @@
   };
 </script>
 
-  <meta name="description" content="L0ve Everything Simp1e">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Simp1er&#39;s blog">
-<meta property="og:url" content="https://simp1er.github.io/archives/2019/08/index.html">
+  <meta name="description" content="写在前面： 最近实在是太忙了，本来说好上个周上完课之后就发篇帖子的，但是手头上一直有事，就一直没发，今天稍微整理了一下也不写具体细节了，就只是简单的分享几张我整理的图片吧，具体流程还是看源码吧。">
+<meta name="keywords" content="Android,ClassLoader">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dex动态加载关键函数调用链">
+<meta property="og:url" content="https://simp1er.github.io/posts/2347a945/index.html">
 <meta property="og:site_name" content="Simp1er&#39;s blog">
-<meta property="og:description" content="L0ve Everything Simp1e">
+<meta property="og:description" content="写在前面： 最近实在是太忙了，本来说好上个周上完课之后就发篇帖子的，但是手头上一直有事，就一直没发，今天稍微整理了一下也不写具体细节了，就只是简单的分享几张我整理的图片吧，具体流程还是看源码吧。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-21T11:27:54.333Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Simp1er&#39;s blog">
-<meta name="twitter:description" content="L0ve Everything Simp1e">
-  <link rel="canonical" href="https://simp1er.github.io/archives/2019/08/">
+<meta name="twitter:title" content="Dex动态加载关键函数调用链">
+<meta name="twitter:description" content="写在前面： 最近实在是太忙了，本来说好上个周上完课之后就发篇帖子的，但是手头上一直有事，就一直没发，今天稍微整理了一下也不写具体细节了，就只是简单的分享几张我整理的图片吧，具体流程还是看源码吧。">
+  <link rel="canonical" href="https://simp1er.github.io/posts/2347a945/">
 
 
 <script id="page-configurations">
@@ -69,13 +71,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
+    isPost: true,
     isPage: false,
-    isArchive: true
+    isArchive: false
   };
 </script>
 
-  <title>归档 | Simp1er's blog</title>
+  <title>Dex动态加载关键函数调用链 | Simp1er's blog</title>
   
     <script>
       function sendPageView() {
@@ -225,85 +227,153 @@
         <div class="content-wrap">
             
 
-  
-    
-    
-  
-    
-    
-  
-    
-    
-  
-  
-
           <div class="content">
             
 
+  <div class="posts-expand">
+      
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        
-        
-        
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://simp1er.github.io/posts/2347a945/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Simp1er">
+      <meta itemprop="description" content="L0ve Everything Simp1e">
+      <meta itemprop="image" content="/images/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Simp1er's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
           
-        
-        <span class="collection-header">嗯..! 目前共计 23 篇日志。 继续努力。</span>
-      </div>
-      
+            Dex动态加载关键函数调用链
+            
 
-      
+          
+        </h1>
 
-  
-  
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
 
-  
+              
+                
+              
+
+              <time title="创建时间：2020-03-21 19:15:25 / 修改时间：19:27:54" itemprop="dateCreated datePublished" datetime="2020-03-21T19:15:25+08:00">2020-03-21</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
     
-    <div class="collection-year">
-      <h1 class="collection-header">2019</h1>
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <ul>
+<li><p>写在前面： 最近实在是太忙了，本来说好上个周上完课之后就发篇帖子的，但是手头上一直有事，就一直没发，今天稍微整理了一下也不写具体细节了，就只是简单的分享几张我整理的图片吧，具体流程还是看源码吧。</p>
+<a id="more"></a>
+<h2 id="Android-4-4下Dex动态加载"><a href="#Android-4-4下Dex动态加载" class="headerlink" title="Android 4.4下Dex动态加载"></a>Android 4.4下Dex动态加载</h2><p>在Android4.4之前，Android是基于Dalvik虚拟机实现的，如果想要实现动态的dex的加载，正常来说就得借助DexClassLoader，DexClassLoader加载dex的具体流程，不再赘述，直接上图<br><img alt data-src="/images/Dalvik_DexClassLoader.png"></p>
+<h2 id="Android-8-0下Dex动态加载"><a href="#Android-8-0下Dex动态加载" class="headerlink" title="Android 8.0下Dex动态加载"></a>Android 8.0下Dex动态加载</h2><p>在Android4.4开始，Android引入Art虚拟机，大大加快了Android应用的运行速度，此时Dex的动态加载主要还是通过DexClassLoader进行加载，只是so层基于Art重写了，这里基于Android 8.0做了整理，注意！！！这个整理是基于禁用了dex2oat的流程，上图！<br><img alt data-src="/images/Art_DexClassLoader.png"><br>在Android 8.0之后，Android又引入了InMemoryDexClassLoader机制，实现了直接从内存中加载dex的方式，这样也实现了Dex的动态加载，上图<br><img alt data-src="/images/Art_InMemoryDexClassLoader.png"></p>
+</li>
+<li><p>写在后面，以上所有图，都是上完@hanbingle师傅的课程后，自己看源码后整理的，如果有错误，欢迎指摘；最后在这里感谢@hanbingle师傅的指导和鼓励。</p>
+</li>
+</ul>
+
     </div>
-  
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2019-08-03T12:59:38+08:00"
-              content="2019-08-03">
-          08-03
-        </time>
-      </div>
-
-      <h2 class="post-title">
+    
+    
+    
         
-          <a class="post-title-link" href="/posts/4b4a17/" itemprop="url">
-            <span itemprop="name">FridaLab--记frida初学</span>
-          </a>
-        
-      </h2>
+      
 
-    </header>
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Android/" rel="tag"># Android</a>
+            
+              <a href="/tags/ClassLoader/" rel="tag"># ClassLoader</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/9daf80f9/" rel="next" title="Android类加载机制">
+                  <i class="fa fa-chevron-left"></i> Android类加载机制
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
   </article>
+  
+  
+  
 
-
-
-
-    </div>
   </div>
-  
-  
-  
-
-  
-
 
 
           </div>
           
+    
+    <div class="comments" id="gitalk-container"></div>
+  
 
         </div>
           
@@ -316,6 +386,11 @@
 
   <aside class="sidebar">
     <div class="sidebar-inner">
+        
+        
+        
+        
+      
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
@@ -328,6 +403,8 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-4-4下Dex动态加载"><span class="nav-number">1.</span> <span class="nav-text">Android 4.4下Dex动态加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-8-0下Dex动态加载"><span class="nav-number">2.</span> <span class="nav-text">Android 8.0下Dex动态加载</span></a></li></ol></div>
+        
       </div>
       <!--/noindex-->
 
@@ -524,6 +601,24 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID: 'be1fedcd1eaf3d18f3c6',
+      clientSecret: '41667bdc1ab3c4f874605e7ad41bce4c6e4adf2a',
+      repo: 'Simp1er.github.io',
+      owner: 'Simp1er',
+      admin: ['Simp1er'],
+      id: 'c4006ddcabdc1624b27aa1d2f05f9e97',
+        language: window.navigator.language || window.navigator.userLanguage,
+      
+      distractionFreeMode: 'true'
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+</script>
 
 </body>
 </html>
