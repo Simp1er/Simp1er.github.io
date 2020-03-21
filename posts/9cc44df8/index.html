@@ -347,7 +347,7 @@
 <h3 id="解题过程-6"><a href="#解题过程-6" class="headerlink" title="解题过程"></a>解题过程</h3><p>直接上工具RSATool<br>输入对应值，拿到flag</p>
 <h2 id="神秘的文件"><a href="#神秘的文件" class="headerlink" title="神秘的文件"></a>神秘的文件</h2><h3 id="题目描述-分值：50-7"><a href="#题目描述-分值：50-7" class="headerlink" title="题目描述 分值：50"></a>题目描述 分值：50</h3><p>出题人太懒，还是就丢了个文件就走了，你能发现里面的秘密吗？</p>
 <h3 id="解题过程-7"><a href="#解题过程-7" class="headerlink" title="解题过程"></a>解题过程</h3><p>binwalk分析下<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj41ylnj6j30k704fmy7.jpg"><br>发现是个磁盘文件，挂载</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> sudo mkdir tmp &amp;&amp; mount haha.f38a74f55b4e193561d1b707211cf7eb tmp</span><br><span class="line"><span class="meta">$</span> cd tmp</span><br><span class="line"><span class="meta">$</span> ls</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo mkdir tmp &amp;&amp; mount haha.f38a74f55b4e193561d1b707211cf7eb tmp</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> tmp</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ls</span></span><br></pre></td></tr></table></figure>
 
 <p>发现文件目录下多了很多文件<br><img alt data-src="https://ws1.sinaimg.cn/large/006eYUKnly1fyj427zbkoj30nd08pwhh.jpg"></p>
 <p>打开几个文件发现，每个文件中只有一个字符，写了个脚本读取每个文件中的值，并组合成flag</p>
@@ -499,9 +499,6 @@
 
           </div>
           
-    
-    <div class="comments" id="gitalk-container"></div>
-  
 
         </div>
           
@@ -593,17 +590,6 @@
         
       
         <a href="https://github.com/Simp1er" title="GitHub &rarr; https://github.com/Simp1er" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
-      </span>
-    
-      <span class="links-of-author-item">
-      
-      
-        
-      
-      
-        
-      
-        <a href="https://twitter.com/Simp1er_sec" title="Twitter &rarr; https://twitter.com/Simp1er_sec" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
       </span>
     
   </div>
@@ -728,25 +714,6 @@
   
 
   
-
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
-
-<script>
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
-    var gitalk = new Gitalk({
-      clientID: 'be1fedcd1eaf3d18f3c6',
-      clientSecret: '41667bdc1ab3c4f874605e7ad41bce4c6e4adf2a',
-      repo: 'Simp1er.github.io',
-      owner: 'Simp1er',
-      admin: ['Simp1er'],
-      id: 'c4c8ccf8d2df3290972cf27d18ab3c61',
-        language: window.navigator.language || window.navigator.userLanguage,
-      
-      distractionFreeMode: 'true'
-    });
-    gitalk.render('gitalk-container');
-  }, window.Gitalk);
-</script>
 
 </body>
 </html>
