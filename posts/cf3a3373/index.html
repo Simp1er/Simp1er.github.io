@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="写在前面经历了两天的苦苦编译，终于我的Android 6.0.1_r77集成了我想要的Xposed环境，经此一役，又再次验证了那一句话，我果然是一个自带Bug的男人。">
+<meta name="keywords" content="Android,Xposed">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android6.0.1_r77集成SuperSU和Xposed">
+<meta property="og:url" content="https://simp1er.github.io/posts/cf3a3373/index.html">
+<meta property="og:site_name" content="Simp1er&#39;s blog">
+<meta property="og:description" content="写在前面经历了两天的苦苦编译，终于我的Android 6.0.1_r77集成了我想要的Xposed环境，经此一役，又再次验证了那一句话，我果然是一个自带Bug的男人。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-24T16:44:57.725Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android6.0.1_r77集成SuperSU和Xposed">
+<meta name="twitter:description" content="写在前面经历了两天的苦苦编译，终于我的Android 6.0.1_r77集成了我想要的Xposed环境，经此一役，又再次验证了那一句话，我果然是一个自带Bug的男人。">
+  <link rel="canonical" href="https://simp1er.github.io/posts/cf3a3373/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Android6.0.1_r77集成SuperSU和Xposed | Simp1er's blog</title>
+  
+    <script>
+      function sendPageView() {
+        var host = window.location.hostname;
+        if (host == "localhost" && true) return;
+        var uid = localStorage.getItem('uid') || (Math.random() + '.' + Math.random());
+        localStorage.setItem('uid', uid);
+        navigator.sendBeacon('https://www.google-analytics.com/collect', new URLSearchParams({
+          v  : 1,
+          tid: 'UA-149875604-1',
+          cid: uid,
+          t  : 'pageview',
+          dp : encodeURIComponent(location.pathname)
+        }));
+      }
+      document.addEventListener('pjax:complete', sendPageView);
+      sendPageView();
+    </script>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?08da9520b0dbc7060ec21e5f5abb9af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Simp1er's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+      
+    
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://simp1er.github.io/posts/cf3a3373/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Simp1er">
+      <meta itemprop="description" content="L0ve Everything Simp1e">
+      <meta itemprop="image" content="/images/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Simp1er's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            Android6.0.1_r77集成SuperSU和Xposed
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-04-25 00:40:28 / 修改时间：00:44:57" itemprop="dateCreated datePublished" datetime="2020-04-25T00:40:28+08:00">2020-04-25</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>经历了两天的苦苦编译，终于我的Android 6.0.1_r77集成了我想要的Xposed环境，经此一役，又再次验证了那一句话，我果然是一个自带Bug的男人。</p>
+<a id="more"></a>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
+<li>Ubuntu 16.04</li>
+<li>Nexus 5</li>
+<li>Android6.0.1_r77</li>
+</ul>
+<h2 id="Android-6-0-1-r77源码编译"><a href="#Android-6-0-1-r77源码编译" class="headerlink" title="Android 6.0.1_r77源码编译"></a>Android 6.0.1_r77源码编译</h2><p>与我之前的<a href="https://bbs.pediy.com/thread-255392.htm" target="_blank" rel="noopener">这篇文章</a>几乎一样，只是下载源码的版本不一样，具体不再赘述，多说一嘴，我选择<code>lunch</code>的是<code>aosp_hammerhead-userdebug</code>，这个很重要！</p>
+<h2 id="集成SuperSU"><a href="#集成SuperSU" class="headerlink" title="集成SuperSU"></a>集成SuperSU</h2><p>为了使得<code>XposedInstaller</code>安装上的时候，能够获取<code>root</code>权限,需要在环境中集成<code>SuperSU</code></p>
+<h3 id="安装修改过的su"><a href="#安装修改过的su" class="headerlink" title="安装修改过的su"></a>安装修改过的<code>su</code></h3><p>由于系统自带的<code>su</code>文件，存在着一系列限制，比如只能<code>root</code>用户或者<code>shell</code>执行，这部分其实可以改动源码实现去除，但在实际操作时，即使改了，我的<code>Superuser.apk</code>仍然不可以检测到<code>root</code>环境的存在，所以使用了<a href="https://download.chainfire.eu/1220/SuperSU/SR5-SuperSU-v2.82-SR5-20171001224502.zip?retrieve_file=1" target="_blank" rel="noopener">SuperSU.zip</a>中的<code>su</code>,而将原本的<code>su</code>屏蔽掉了，<code>su</code>的文件夹位置为<code>system/extras/su</code>，你可以选取删除<code>su</code>文件夹或者直接将这个文件夹下的<code>Android.mk</code>文件改名就行。我这里直接改了名字</p>
+<p><img alt data-src="/images/imgs-2020-4-25/1.jpg"></p>
+<p>然后拷贝出<code>SuperSU.zip</code>下的<code>su</code>,<code>libsupol.so</code>,<code>supolicy</code>（这里的文件必须选择对应设备版本的文件，我这里使用的是N5,所以选择的是<code>armv7</code>文件夹下的），到源码根目录下的<code>packages</code>文件夹下，创建了名为<code>su</code>的文件夹，同时将这三个文件paste进去，并将<code>su</code>可执行文件复制一份并重命名为<code>daemonsu</code>放到同一目录，<br>  然后，在这个文件夹里面新建一个<code>Android.mk</code>，具体内容如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_PATH := $(call my-dir)</span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE_TAGS := optional</span><br><span class="line">LOCAL_MODULE := su</span><br><span class="line">LOCAL_SRC_FILES := $(LOCAL_MODULE)</span><br><span class="line">LOCAL_MODULE_CLASS := EXECUTABLES</span><br><span class="line">LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)</span><br><span class="line">LOCAL_UNSTRIPPED_PATH := $(LOCAL_MODULE_PATH)</span><br><span class="line">include $(BUILD_PREBUILT)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE_TAGS := optional</span><br><span class="line">LOCAL_MODULE := daemonsu</span><br><span class="line">LOCAL_SRC_FILES := $(LOCAL_MODULE)</span><br><span class="line">LOCAL_MODULE_CLASS := EXECUTABLES</span><br><span class="line">LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)</span><br><span class="line">LOCAL_UNSTRIPPED_PATH := $(LOCAL_MODULE_PATH)</span><br><span class="line">include $(BUILD_PREBUILT)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE_TAGS := optional</span><br><span class="line">LOCAL_MODULE := supolicy</span><br><span class="line">LOCAL_SRC_FILES := $(LOCAL_MODULE)</span><br><span class="line">LOCAL_MODULE_CLASS := EXECUTABLES</span><br><span class="line">LOCAL_MODULE_PATH := $(TARGET_OUT_OPTIONAL_EXECUTABLES)</span><br><span class="line">LOCAL_UNSTRIPPED_PATH := $(LOCAL_MODULE_PATH)</span><br><span class="line">include $(BUILD_PREBUILT)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE_TAGS := optional</span><br><span class="line">LOCAL_MODULE := libsupol.so</span><br><span class="line">LOCAL_MODULE_CLASS := SHARED_LIBRARIES</span><br><span class="line">LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)</span><br><span class="line">LOCAL_SRC_FILES := $(LOCAL_MODULE)</span><br><span class="line">OVERRIDE_BUILD_MODULE_PATH := $(TARGET_OUT_INTERMEDIATE_LIBRARIES)</span><br><span class="line">include $(BUILD_PREBUILT)</span><br></pre></td></tr></table></figure>
+
+<p>最终目录结构如下</p>
+<p><img alt data-src="/images/imgs-2020-4-25/2.jpg"></p>
+<p>之后，为了能够apk申请<code>root</code>权限时，能够弹框询问，将<code>SuperSU.zip</code>下的<code>common/Superuser.apk</code>拷贝，放到源码根目录下的<code>packages/apps/SuperSU</code>文件夹下，这里的<code>SuperSU</code>文件夹需要自己建立，在文件夹里新建一个<code>Android.mk</code>，具体内容如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_PATH := $(call my-dir)</span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE := SuperSU</span><br><span class="line"></span><br><span class="line">LOCAL_SRC_FILES := Superuser.apk</span><br><span class="line">LOCAL_MODULE_CLASS := APPS</span><br><span class="line">LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)</span><br><span class="line">LOCAL_CERTIFICATE := PRESIGNED</span><br><span class="line"></span><br><span class="line">include $(BUILD_PREBUILT)</span><br></pre></td></tr></table></figure>
+
+<p>最终目录结构如下：</p>
+<p><img alt data-src="/images/imgs-2020-4-25/3.jpg"></p>
+<h3 id="关闭SELinux"><a href="#关闭SELinux" class="headerlink" title="关闭SELinux"></a>关闭<code>SELinux</code></h3><p>进入源码根目录下的<code>/device/</code>目录下，选择对应编译的设备版本，具体目录如下</p>
+<p><img alt data-src="/images/imgs-2020-4-25/4.jpg"></p>
+<p>可以看到支持很多设备，我之前说了，我编译的是N5的版本，所以选择<code>lge/hammerhead</code>，进入对应目录，修改<code>BoardConfig.mk</code>文件,在<code>BOARD_KERNEL_CMDLINE :=</code>下一行加上<br><code>BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive</code>,具体如下</p>
+<p><img alt data-src="/images/imgs-2020-4-25/5.jpg"></p>
+<p>网上有博客说，也可以把<code>permissive</code>改为<code>disabled</code>，具体效果我没试。有兴趣可以试试。</p>
+<h3 id="“安装”su等文件"><a href="#“安装”su等文件" class="headerlink" title="“安装”su等文件"></a>“安装”<code>su</code>等文件</h3><p>在与关闭<code>SELinux</code>操作的相同目录下，<br>打开<code>device.mk</code>,增加如下文本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># SuperSU</span><br><span class="line">PRODUCT_PACKAGES += \</span><br><span class="line">    su \</span><br><span class="line">    daemonsu \</span><br><span class="line">    supolicy \</span><br><span class="line">    libsupol.so \</span><br><span class="line">    SuperSU</span><br></pre></td></tr></table></figure>
+
+<p>使得在重新编译源码时，将这些文件”安装”到对应目录,比如<code>su</code>安装到<code>/system/xbin/</code>目录下等等。</p>
+<h3 id="更新su等文件权限"><a href="#更新su等文件权限" class="headerlink" title="更新su等文件权限"></a>更新<code>su</code>等文件权限</h3><p>打开源码根目录下的<code>system/core/libcutils</code>的<code>fs_config.c</code>文件，增加相关文件权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123; 04750, AID_ROOT,      AID_SHELL,     0, &quot;system/xbin/su&quot; &#125;,</span><br><span class="line">&#123; 07777, AID_ROOT,      AID_ROOT,     0, &quot;system/xbin/daemonsu&quot; &#125;,</span><br><span class="line">&#123; 06755, AID_ROOT,      AID_ROOT,     0, &quot;system/xbin/supolicy&quot; &#125;,</span><br></pre></td></tr></table></figure>
+
+<p>效果如下</p>
+<p><img alt data-src="/images/imgs-2020-4-25/6.jpg"></p>
+<h3 id="配置SuperSU的deamon"><a href="#配置SuperSU的deamon" class="headerlink" title="配置SuperSU的deamon"></a>配置<code>SuperSU</code>的<code>deamon</code></h3><p>打开<code>system/core/rootdir/init.rc</code>,增加以下代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># SuperSU</span><br><span class="line">service daemonsu /system/xbin/daemonsu --auto-daemon &amp;</span><br><span class="line">    class main</span><br><span class="line">    oneshot</span><br></pre></td></tr></table></figure>
+
+<p>使得在系统启动时，劫持<code>app_process</code>,作为守护进程存在</p>
+<p>至此，我们的<code>SuperSU</code>就集成完毕了。最终效果如下</p>
+<p><img alt data-src="/images/imgs-2020-4-25/20.jpg"></p>
+<h2 id="集成Xposed"><a href="#集成Xposed" class="headerlink" title="集成Xposed"></a>集成<code>Xposed</code></h2><p><code>Xposed</code>一共由3部分组成：<code>Xposed Installer</code> + <code>Xposed native</code>部分 + <code>XposedBridge.jar</code>.各自的作用不再赘述。下面开始设置编译</p>
+<h3 id="替换Xposed-art"><a href="#替换Xposed-art" class="headerlink" title="替换Xposed-art"></a>替换<code>Xposed-art</code></h3><p>首先，由于<code>Android 6.0</code>基于<code>ART</code>，<code>Xposed</code>在实现<code>ART</code>模式下的<code>hook</code>时，修改了部分<code>ART</code>虚拟机代码，为此需要下载<code>Xposed-art</code>替换原本源码根目录下的<code>art</code>文件夹，并切换到6.0的分支，具体操作如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rm -rf art</span><br><span class="line">git clone https://github.com/rovo89/android_art.git art</span><br><span class="line">cd art</span><br><span class="line">git checkout xposed-marshmallow</span><br></pre></td></tr></table></figure>
+
+<p><img alt data-src="/images/imgs-2020-4-25/7.jpg"><br><img alt data-src="/images/imgs-2020-4-25/11.jpg"></p>
+<h3 id="下载”安装”Xposed-native部分"><a href="#下载”安装”Xposed-native部分" class="headerlink" title="下载”安装”Xposed-native部分"></a>下载”安装”<code>Xposed-native</code>部分</h3><p>进入源码根目录下的<code>frameworks/base/cmds</code>文件夹，下载<code>Xposed-native</code>部分</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd frameworks/base/cmds</span><br><span class="line">git clone https://github.com/rovo89/Xposed.git</span><br></pre></td></tr></table></figure>
+
+<p><img alt data-src="/images/imgs-2020-4-25/8.jpg"></p>
+<h3 id="编译安装XposedBridge-jar"><a href="#编译安装XposedBridge-jar" class="headerlink" title="编译安装XposedBridge.jar"></a>编译安装<code>XposedBridge.jar</code></h3><p>这个部分的编译我是使用的<code>IDEA</code>去编译的。。。<br>具体过程不再赘述。最后实际上编译出一个apk，将这个文件改名为<code>XposedBridge.jar</code>并拷贝到源码根目录下的<code>out/target/product/hammerhead/system/framework</code>文件夹下</p>
+<h3 id="“安装”XposedInstaller"><a href="#“安装”XposedInstaller" class="headerlink" title="“安装”XposedInstaller"></a>“安装”<code>XposedInstaller</code></h3><p>从网上下载<a href="https://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=339011" target="_blank" rel="noopener">XposedInstaller-3.15.apk</a>放到源码根目录下的<code>packages/apps/XposedInstaller</code>文件夹下，这里的<code>XposedInstaller</code>文件夹同样需要自己建立，同样地，新建一个<code>Android.mk</code>，内容类似于<code>SuperSU</code>的。这里也贴出来吧</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_PATH := $(call my-dir)</span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE := XposedInstaller</span><br><span class="line">LOCAL_MODULE_TAGS := optional</span><br><span class="line">LOCAL_SRC_FILES := $(LOCAL_MODULE).apk</span><br><span class="line">LOCAL_MODULE_CLASS := APPS</span><br><span class="line">LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)</span><br><span class="line">LOCAL_CERTIFICATE := PRESIGNED</span><br><span class="line">include $(BUILD_PREBUILT)</span><br></pre></td></tr></table></figure>
+
+<p>目录结构如下</p>
+<p><img alt data-src="/images/imgs-2020-4-25/9.jpg"></p>
+<p>同样地,为了使得编译源码时，<code>XposedInstaller</code>“安装”上，需要修改<code>/device/lge/hammerhead</code>文件夹下<code>device.mk</code>文件，在刚才增加的地方后面再加上<code>XposedInstaller</code>,当然这里也要对应自己的设备。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># XposedInstaller</span><br><span class="line">PRODUCT_PACKAGES += \</span><br><span class="line">    XposedInstaller</span><br></pre></td></tr></table></figure>
+
+<p><img alt data-src="/images/imgs-2020-4-25/10.jpg"></p>
+<p>然后再次<code>编译一下源码</code>。</p>
+<h3 id="编译Xposed相关"><a href="#编译Xposed相关" class="headerlink" title="编译Xposed相关"></a>编译<code>Xposed</code>相关</h3><p>最后一步，但也是最重要的一步，下载<code>XposedTools</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">git clone https://github.com/rovo89/XposedTools.git</span><br><span class="line">cd XposedTools</span><br></pre></td></tr></table></figure>
+
+<p>我这里稍微修改了一下<code>XposedTools</code>文件夹下的<code>Xposed.pm</code>文件<br>将第226行的代码改为<code>return &#39;out/target/product/hammerhead&#39;;</code><br>同时将第256行的代码改为<code>return ($sdk &lt;= 17) ? &#39;full-eng&#39; : &#39;aosp_hammerhead-userdebug&#39;;</code>,</p>
+<p><img alt data-src="/images/imgs-2020-4-25/12.jpg"></p>
+<p>注意！我这里的修改是为了之后不再进行重复的复制操作，但只是修改了适配我自己的编译，如果使用其他设备，请自己自行修改或者直接用原来的，具体过程可以参考<a href="https://www.jianshu.com/p/6471bab49cb1" target="_blank" rel="noopener">这个</a>。</p>
+<p>然后在<code>XposedTools</code>根目录下，参照已有的<code>build.conf.example</code>创建一个<code>build.conf</code>文件，我的文件内容如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[General]</span><br><span class="line"># 注释，可删除：指定，输出编译结果目录</span><br><span class="line">outdir = /home/simp1er/XposedTools/out</span><br><span class="line"></span><br><span class="line">[Build]</span><br><span class="line"># 版本大于89就行</span><br><span class="line">version = 99(custom build by author )</span><br><span class="line"># 根据CPU情况设置线程</span><br><span class="line">makeflags = -j6</span><br><span class="line"></span><br><span class="line">[GPG]</span><br><span class="line">sign = release</span><br><span class="line">user = Simp1er</span><br><span class="line"></span><br><span class="line">[AospDir]</span><br><span class="line"># 23代表SDK版本，等于号后接的是Android源码根目录</span><br><span class="line">23 = /home/simp1er/android-6.0.1_r77</span><br></pre></td></tr></table></figure>
+
+<p>然后新建<code>out</code>文件夹并进入<code>out</code>文件夹下新建<code>java</code>文件夹，将之前编译生成的<code>XposedBridge.jar</code>拷贝到这个目录下，最终<code>XposedTools</code>目录结构如下</p>
+<p><img alt data-src="/images/imgs-2020-4-25/13.jpg"></p>
+<p>然后，进入<code>XposedTools</code>根目录，开始编译！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./build.pl -t arm:23</span><br></pre></td></tr></table></figure>
+
+<p>这里的<code>arm</code>代表我的设备是<code>arm</code>架构的，<code>23</code>代表<code>SDK</code>版本。由于这个脚本是基于<code>perl</code>的，在执行过程中，可能会提示缺少一些依赖包，例如可能会缺少<code>Config::IniFiles</code>，使用<code>apt-cache search Config::IniFiles</code>搜索，然后<code>sudo apt-get install</code>安装缺少的包即可。我这边缺失的库以及解决的办法如下</p>
+<p><img alt data-src="/images/imgs-2020-4-25/14.png"></p>
+<p>然后重新编译</p>
+<p><img alt data-src="/images/imgs-2020-4-25/15.png"></p>
+<p>之后</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd out/sdk23/arm/files/system/bin</span><br><span class="line">mv app_process32_xposed app_process32 #修改文件名</span><br><span class="line">cd ../../ </span><br><span class="line">cp -r system ~/android-6.0.1_r77/out/target/product/hammerhead/ #将编译好的`Xposed`相关文件复制到对应文件夹</span><br></pre></td></tr></table></figure>
+
+<p><img alt data-src="/images/imgs-2020-4-25/16.jpg"></p>
+<p>最后重新编译下系统源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd ~/android-6.0.1_r77</span><br><span class="line">source build/envsetup.sh</span><br><span class="line">lunch 19</span><br><span class="line">make -j6 snod #只打包文件</span><br></pre></td></tr></table></figure>
+
+<p><img alt data-src="/images/imgs-2020-4-25/17.jpg"></p>
+<p>然后<code>fastboot</code>重新刷所有<code>img</code>，注意第一次启动手机由于此时无<code>XposedInstaller</code>数据目录，所以是会报错<code>XposedInstaller</code>意外中止的。忽略不管，直接上最终效果</p>
+<p><code>Xposed</code>效果图</p>
+<p><img alt data-src="/images/imgs-2020-4-25/18.jpg"></p>
+<p>安装<code>GravityBox</code>，并测试更改状态栏效果</p>
+<p><img alt data-src="/images/imgs-2020-4-25/19.jpg"></p>
+<p>可见集成编译成功！</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.infoq.cn/article/android-in-depth-xposed" target="_blank" rel="noopener">深入理解 Android（三）：Xposed 详解</a></p>
+<p><a href="https://www.hellojava.com/a/78058.html" target="_blank" rel="noopener">Xposed 集成 Android 6.0.1环境中，总结</a></p>
+<p><a href="https://sickworm.com/?p=367" target="_blank" rel="noopener">给 Android ROM（AOSP）集成 SuperSU 的方法</a></p>
+<p><a href="https://bbs.pediy.com/thread-258639.htm" target="_blank" rel="noopener">XPOSED魔改一：获取特征</a></p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>其实这个编译过程中还参考了很多其他博客，就不一一列举了，在此表示感谢，另外感谢<code>@r0ysue</code>师傅，感谢提示使用<code>SuperSU</code>帮助<code>Xposed</code>获取<code>root</code>.最后写的不好的地方敬请指摘.</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Android/" rel="tag"># Android</a>
+            
+              <a href="/tags/Xposed/" rel="tag"># Xposed</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/2347a945/" rel="next" title="Dex动态加载关键函数调用链">
+                  <i class="fa fa-chevron-left"></i> Dex动态加载关键函数调用链
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境"><span class="nav-number">2.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-6-0-1-r77源码编译"><span class="nav-number">3.</span> <span class="nav-text">Android 6.0.1_r77源码编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集成SuperSU"><span class="nav-number">4.</span> <span class="nav-text">集成SuperSU</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装修改过的su"><span class="nav-number">4.1.</span> <span class="nav-text">安装修改过的su</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关闭SELinux"><span class="nav-number">4.2.</span> <span class="nav-text">关闭SELinux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#“安装”su等文件"><span class="nav-number">4.3.</span> <span class="nav-text">“安装”su等文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新su等文件权限"><span class="nav-number">4.4.</span> <span class="nav-text">更新su等文件权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置SuperSU的deamon"><span class="nav-number">4.5.</span> <span class="nav-text">配置SuperSU的deamon</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集成Xposed"><span class="nav-number">5.</span> <span class="nav-text">集成Xposed</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#替换Xposed-art"><span class="nav-number">5.1.</span> <span class="nav-text">替换Xposed-art</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载”安装”Xposed-native部分"><span class="nav-number">5.2.</span> <span class="nav-text">下载”安装”Xposed-native部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译安装XposedBridge-jar"><span class="nav-number">5.3.</span> <span class="nav-text">编译安装XposedBridge.jar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#“安装”XposedInstaller"><span class="nav-number">5.4.</span> <span class="nav-text">“安装”XposedInstaller</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译Xposed相关"><span class="nav-number">5.5.</span> <span class="nav-text">编译Xposed相关</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在最后"><span class="nav-number">7.</span> <span class="nav-text">写在最后</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/head.jpg"
+      alt="Simp1er">
+  <p class="site-author-name" itemprop="name">Simp1er</p>
+  <div class="site-description" itemprop="description">L0ve Everything Simp1e</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Simp1er" title="GitHub &rarr; https://github.com/Simp1er" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-Simp1er"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Simp1er</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
