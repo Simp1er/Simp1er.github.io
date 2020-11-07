@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <meta name="google-site-verification" content="HsPsdQ-mMWmlnLaKHjhPx98Hofl5d-1KS2t16MY0qYA">
+
+<link rel="stylesheet" href="/css/main.css?v=7.4.1">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.4.1',
+    exturl: false,
+    sidebar: {"position":"left","display":"always","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: true,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="写在前面博客很久没更新了，来更新一波 个人对整体壳脱壳方法做了一些自己的总结，本人菜鸡一个，下面描述如果不对，欢迎指摘。">
+<meta name="keywords" content="Android,unpack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="整体壳脱壳方法总结">
+<meta property="og:url" content="https://simp1er.github.io/posts/89eea95e/index.html">
+<meta property="og:site_name" content="Simp1er&#39;s blog">
+<meta property="og:description" content="写在前面博客很久没更新了，来更新一波 个人对整体壳脱壳方法做了一些自己的总结，本人菜鸡一个，下面描述如果不对，欢迎指摘。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-11-07T04:01:00.498Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="整体壳脱壳方法总结">
+<meta name="twitter:description" content="写在前面博客很久没更新了，来更新一波 个人对整体壳脱壳方法做了一些自己的总结，本人菜鸡一个，下面描述如果不对，欢迎指摘。">
+  <link rel="canonical" href="https://simp1er.github.io/posts/89eea95e/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>整体壳脱壳方法总结 | Simp1er's blog</title>
+  
+    <script>
+      function sendPageView() {
+        var host = window.location.hostname;
+        if (host == "localhost" && true) return;
+        var uid = localStorage.getItem('uid') || (Math.random() + '.' + Math.random());
+        localStorage.setItem('uid', uid);
+        navigator.sendBeacon('https://www.google-analytics.com/collect', new URLSearchParams({
+          v  : 1,
+          tid: 'UA-149875604-1',
+          cid: uid,
+          t  : 'pageview',
+          dp : encodeURIComponent(location.pathname)
+        }));
+      }
+      document.addEventListener('pjax:complete', sendPageView);
+      sendPageView();
+    </script>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?08da9520b0dbc7060ec21e5f5abb9af0";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Simp1er's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+        
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+      
+    
+      
+      
+        
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+      
+    
+  </ul>
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://simp1er.github.io/posts/89eea95e/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Simp1er">
+      <meta itemprop="description" content="L0ve Everything Simp1e">
+      <meta itemprop="image" content="/images/head.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Simp1er's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            整体壳脱壳方法总结
+            
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-11-07 11:28:18 / 修改时间：12:01:00" itemprop="dateCreated datePublished" datetime="2020-11-07T11:28:18+08:00">2020-11-07</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>博客很久没更新了，来更新一波</p>
+<p>个人对整体壳脱壳方法做了一些自己的总结，本人菜鸡一个，下面描述如果不对，欢迎指摘。</p>
+<a id="more"></a>
+<p><img alt="img" data-src="/images/Uppack-Summary.assets/clip_image001.png"></p>
+<h2 id="1-内存dump"><a href="#1-内存dump" class="headerlink" title="1. 内存dump"></a>1. 内存dump</h2><p>dex开头会有标志性标志dex035 /dex036/ dex037等关键标志</p>
+<p>在dex偏移0x20处有4个字节存储dex的大小</p>
+<p>比如</p>
+<p><a href="https://github.com/hluwa/FRIDA-DEXDump.git" target="_blank" rel="noopener">https://github.com/hluwa/FRIDA-DEXDump.git</a></p>
+<p>核心原理就是在内存中暴力搜索dex035等标志去搜索和dump dex的</p>
+<p><img alt="img" data-src="/images/Uppack-Summary.assets/clip_image002.png"></p>
+<p>或者其他一些在IDA上使用的dump工具。</p>
+<p>这类的方法基本上只能应对整体壳，针对类抽取壳，如果是恢复后就回填不再抽取出来的类型，就需要看时机了。</p>
+<h2 id="2-hook关键函数"><a href="#2-hook关键函数" class="headerlink" title="2. hook关键函数"></a>2. hook关键函数</h2><p>hook大法：通过frida、Xposed或者其他一些hook工具 hook 比如dalvik时代的dvmDexFileOpenPartial函数，</p>
+<p>6.0和7.0的OpenMemory函数</p>
+<p><img alt="img" data-src="/images/Uppack-Summary.assets/clip_image004.png"></p>
+<p>8.0-10.0上的OpenCommon函数</p>
+<p><img alt="img" data-src="/images/Uppack-Summary.assets/clip_image005.png"></p>
+<p>在这些函数的参数中基本上都会有关于起始地址、dex文件大小的参数，作为关键参数，方便在逆向时dump出dex</p>
+<p>比如</p>
+<p><a href="https://github.com/WrBug/dumpDex.git" target="_blank" rel="noopener">https://github.com/WrBug/dumpDex.git</a></p>
+<p>工具使用Xposed结合Native hook的一些其他hook工具对APP进行注入和hook，最终实现dumpdex的效果</p>
+<p><img alt="img" data-src="/images/Uppack-Summary.assets/clip_image006.png"></p>
+<p><img alt="img" data-src="/images/Uppack-Summary.assets/clip_image007.png"></p>
+<p>再比如</p>
+<p><a href="https://github.com/GuoQiang1993/Frida-Apk-Unpack.git" target="_blank" rel="noopener">https://github.com/GuoQiang1993/Frida-Apk-Unpack.git</a></p>
+<p><img alt="img" data-src="/images/Uppack-Summary.assets/clip_image008.png"></p>
+<p>是使用frida 去hook以上所说这些函数进行hook进行dump</p>
+<p>这些函数其实也是只能针对整体壳的方式去进行dex的dump</p>
+<h2 id="3-定制源码"><a href="#3-定制源码" class="headerlink" title="3. 定制源码"></a>3. 定制源码</h2><p>事实上正如寒冰老师所说，在Art时代由于DexFile对象类定义时，存在Begin()和Size()函数</p>
+<p><img alt="img" data-src="/images/Uppack-Summary.assets/clip_image009.png"></p>
+<p>实际上在任何包含DexFile类型参数的地方其实都可以</p>
+<p>甚至于由于ArtMethod有获取对应DexFile的函数</p>
+<p><img alt="img" data-src="/images/Uppack-Summary.assets/clip_image010.png"></p>
+<p>那么其实在任何出现ArtMethod的地方其实都可以dump 出dex，只是脱壳点好与坏的问题</p>
+<hr>
+<p>关于整体加固的方法，暂时就总结到这里，关于函数抽取类型的加密，目前公开的脱壳方法都是主动调用去解决的，这些方式都是使用主动调用实现的。</p>
+<p>这里就列出来源码以及对应文章吧</p>
+<p>源码： <a href="https://github.com/zyq8709/DexHunter.git" target="_blank" rel="noopener">DexHunter</a></p>
+<p>具体原理： <a href="https://wooyun.js.org/drops/%E4%BB%8EAndroid%E8%BF%90%E8%A1%8C%E6%97%B6%E5%87%BA%E5%8F%91%EF%BC%8C%E6%89%93%E9%80%A0%E6%88%91%E4%BB%AC%E7%9A%84%E8%84%B1%E5%A3%B3%E7%A5%9E%E5%99%A8.html" target="_blank" rel="noopener">https://wooyun.js.org/drops/%E4%BB%8EAndroid%E8%BF%90%E8%A1%8C%E6%97%B6%E5%87%BA%E5%8F%91%EF%BC%8C%E6%89%93%E9%80%A0%E6%88%91%E4%BB%AC%E7%9A%84%E8%84%B1%E5%A3%B3%E7%A5%9E%E5%99%A8.html</a></p>
+<p>源码： <a href="https://github.com/F8LEFT/FUPK3.git" target="_blank" rel="noopener">FUPK3</a></p>
+<p>原理介绍： <a href="https://bbs.pediy.com/thread-246117.htm" target="_blank" rel="noopener">https://bbs.pediy.com/thread-246117.htm</a></p>
+<p>源码：<a href="https://github.com/hanbinglengyue/FART.git" target="_blank" rel="noopener">FART</a></p>
+<p>原理介绍：<a href="https://bbs.pediy.com/thread-252630.htm" target="_blank" rel="noopener">https://bbs.pediy.com/thread-252630.htm</a></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Android/" rel="tag"># Android</a>
+            
+              <a href="/tags/unpack/" rel="tag"># unpack</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/posts/cf3a3373/" rel="next" title="Android6.0.1_r77集成SuperSU和Xposed">
+                  <i class="fa fa-chevron-left"></i> Android6.0.1_r77集成SuperSU和Xposed
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-内存dump"><span class="nav-number">2.</span> <span class="nav-text">1. 内存dump</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-hook关键函数"><span class="nav-number">3.</span> <span class="nav-text">2. hook关键函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-定制源码"><span class="nav-number">4.</span> <span class="nav-text">3. 定制源码</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/head.jpg"
+      alt="Simp1er">
+  <p class="site-author-name" itemprop="name">Simp1er</p>
+  <div class="site-description" itemprop="description">L0ve Everything Simp1e</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/Simp1er" title="GitHub &rarr; https://github.com/Simp1er" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-Simp1er"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Simp1er</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">
+      
+    主题 – <a href="https://pisces.theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.4.1
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+<script src="/js/utils.js?v=7.4.1"></script><script src="/js/motion.js?v=7.4.1"></script>
+<script src="/js/schemes/pisces.js?v=7.4.1"></script>
+<script src="/js/next-boot.js?v=7.4.1"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
